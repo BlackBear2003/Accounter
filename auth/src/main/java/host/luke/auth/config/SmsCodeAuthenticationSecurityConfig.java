@@ -1,8 +1,11 @@
 package host.luke.auth.config;
 
+import host.luke.auth.security.PwdAuthenticationProvider;
 import host.luke.auth.security.SmsCodeAuthenticationProvider;
 import host.luke.auth.security.UserDetailServiceMobileImpl;
+import host.luke.auth.security.UserDetailServicePwdImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.SecurityConfigurerAdapter;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.DefaultSecurityFilterChain;
@@ -14,6 +17,10 @@ public class SmsCodeAuthenticationSecurityConfig extends SecurityConfigurerAdapt
     @Autowired
     private UserDetailServiceMobileImpl userDetailServiceMobile;
 
+    @Autowired
+    private UserDetailServicePwdImpl userDetailServicePwd;
+
+
     @Override
     public void configure(HttpSecurity builder) throws Exception {
 
@@ -22,8 +29,11 @@ public class SmsCodeAuthenticationSecurityConfig extends SecurityConfigurerAdapt
         SmsCodeAuthenticationProvider smsCodeAuthenticationProvider = new SmsCodeAuthenticationProvider();
         smsCodeAuthenticationProvider.setUserDetailsService(userDetailServiceMobile);
 
+        PwdAuthenticationProvider pwdAuthenticationProvider = new PwdAuthenticationProvider();
+        pwdAuthenticationProvider.setUserDetailServicePwd(userDetailServicePwd);
 
-        builder.authenticationProvider(smsCodeAuthenticationProvider);
+        builder.authenticationProvider(pwdAuthenticationProvider)
+        .authenticationProvider(smsCodeAuthenticationProvider);
     }
 
 

@@ -46,7 +46,8 @@ public class SmsCodeFilter  extends OncePerRequestFilter {
                                     FilterChain filterChain) throws ServletException, IOException {
         //判断请求页面是否为/auth/login/mobile、该路径对应登录form表单的action路径，请求的方法是否为POST，是的话进行验证码校验逻辑，否则直接执行filterChain.doFilter让代码往下走
         System.out.println(httpServletRequest.getRequestURI());
-        if (StringUtils.equalsIgnoreCase("/auth/login/mobile", httpServletRequest.getRequestURI())
+        if ((StringUtils.equalsIgnoreCase("/auth/login/mobile", httpServletRequest.getRequestURI())
+                ||StringUtils.equalsIgnoreCase("/auth/register/mobile", httpServletRequest.getRequestURI()))
                 && StringUtils.equalsIgnoreCase(httpServletRequest.getMethod(), "post")) {
             try {
                 validateSmsCode(new ServletWebRequest(httpServletRequest));

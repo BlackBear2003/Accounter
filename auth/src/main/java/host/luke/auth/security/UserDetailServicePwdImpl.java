@@ -30,7 +30,8 @@ public class UserDetailServicePwdImpl implements UserDetailsService {
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("username",username);
         User user = userService.getOne(queryWrapper);
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setPassword(user.getPassword());
+        System.out.println(user);
         if(Objects.isNull(user)){
             throw new RuntimeException("查无此用户名");
         }

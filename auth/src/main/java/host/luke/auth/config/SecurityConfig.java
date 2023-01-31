@@ -1,6 +1,8 @@
 package host.luke.auth.config;
 
 import host.luke.auth.security.AuthenticationEntryPointImpl;
+import host.luke.auth.security.PwdAuthenticationProvider;
+import host.luke.auth.security.SmsCodeAuthenticationProvider;
 import host.luke.auth.security.SmsCodeFilter;
 import jakarta.annotation.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +10,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -22,10 +25,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
 
-    @Bean
-    public PasswordEncoder passwordEncoder(){
-        return new BCryptPasswordEncoder();
-    }
+
 
     @Autowired
     AuthenticationEntryPointImpl authenticationEntryPoint;
@@ -35,6 +35,8 @@ public class SecurityConfig {
 
     @Autowired
     SmsCodeFilter smsCodeFilter;
+
+
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -86,6 +88,7 @@ public class SecurityConfig {
 
     @Bean
     public AuthenticationManager authenticationManager() throws Exception{
+
         AuthenticationManager authenticationManager = authenticationConfiguration.getAuthenticationManager();
         return authenticationManager;
     }

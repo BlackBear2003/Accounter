@@ -61,6 +61,7 @@ public class ResponseResult<T> {
         return new ResponseResult(200,"success");
     }
 
+
     public static ResponseResult error(){
         return new ResponseResult(500,"error");
     }
