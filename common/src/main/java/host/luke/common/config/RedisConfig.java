@@ -1,4 +1,4 @@
-package host.luke.auth.config;
+package host.luke.common.config;
 
 import com.alibaba.fastjson.support.spring.FastJsonRedisSerializer;
 import org.springframework.context.annotation.Bean;

@@ -2,7 +2,7 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="host.luke.auth.dao.UserMapper">
+<mapper namespace="host.luke.common.dao.UserMapper">
     <select id="getAuthByUid" parameterType="Long" resultType="String">
         select auth_name
         from t_auth where auth_id in (select auth_id from t_user_auth where user_id = #{id})

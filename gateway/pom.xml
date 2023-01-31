@@ -18,8 +18,12 @@
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>host.luke</groupId>
+            <artifactId>common</artifactId>
+            <version>1.0</version>
+        </dependency>
         <!--引入gateway 网关-->
-
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-gateway</artifactId>

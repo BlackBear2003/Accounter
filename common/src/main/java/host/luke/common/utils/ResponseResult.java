@@ -56,4 +56,12 @@ public class ResponseResult<T> {
         this.message = msg;
         this.data = data;
     }
+
+    public static ResponseResult success(){
+        return new ResponseResult(200,"success");
+    }
+
+    public static ResponseResult error(){
+        return new ResponseResult(500,"error");
+    }
 }

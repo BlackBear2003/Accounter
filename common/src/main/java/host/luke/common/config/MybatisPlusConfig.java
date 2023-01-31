@@ -1,4 +1,4 @@
-package host.luke.auth.config;
+package host.luke.common.config;
 
 import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
 import com.baomidou.mybatisplus.extension.spring.MybatisSqlSessionFactoryBean;
@@ -14,7 +14,7 @@ import javax.sql.DataSource;
 
 @EnableTransactionManagement
 @Configuration
-@MapperScan("host.luke.auth.dao")
+@MapperScan("host.luke.common.dao")
 public class MybatisPlusConfig {
 
     @Bean

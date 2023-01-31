@@ -1,6 +1,6 @@
 package host.luke.auth.security;
 
-import host.luke.auth.pojo.User;
+import host.luke.common.pojo.User;
 import host.luke.common.utils.JwtUtil;
 import host.luke.common.utils.ResponseResult;
 import org.apache.commons.lang.RandomStringUtils;

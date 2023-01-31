@@ -1,7 +1,7 @@
 package host.luke.auth.security;
 
 import com.alibaba.fastjson.annotation.JSONField;
-import host.luke.auth.pojo.User;
+import host.luke.common.pojo.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

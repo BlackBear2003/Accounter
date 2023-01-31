@@ -1,8 +1,7 @@
-package host.luke.auth.dao;
+package host.luke.common.dao;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.fasterxml.jackson.databind.ser.Serializers;
-import host.luke.auth.pojo.User;
+import host.luke.common.pojo.User;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;

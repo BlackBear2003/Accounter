@@ -1,7 +1,7 @@
-package host.luke.auth.service;
+package host.luke.common.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import host.luke.auth.pojo.User;
+import host.luke.common.pojo.User;
 
 public interface UserService extends IService<User> {
 }
