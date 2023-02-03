@@ -50,6 +50,7 @@ public class SmsCodeFilter  extends OncePerRequestFilter {
                 ||StringUtils.equalsIgnoreCase("/auth/register/mobile", httpServletRequest.getRequestURI()))
                 && StringUtils.equalsIgnoreCase(httpServletRequest.getMethod(), "post")) {
             try {
+                //验证验证码的正确性 失败直接返回请求 正确就继续往下走doFilter
                 validateSmsCode(new ServletWebRequest(httpServletRequest));
             } catch (ValidateCodeException e) {
                 System.out.println("验证码校验失败!");

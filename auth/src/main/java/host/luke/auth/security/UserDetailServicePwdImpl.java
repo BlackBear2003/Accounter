@@ -1,9 +1,9 @@
 package host.luke.auth.security;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import host.luke.common.dao.UserMapper;
+import host.luke.auth.dao.UserMapper;
 import host.luke.common.pojo.User;
-import host.luke.common.service.impl.UserServiceImpl;
+import host.luke.auth.service.impl.UserServiceImpl;
 import jakarta.annotation.Resource;
 
 import org.springframework.security.core.userdetails.UserDetails;

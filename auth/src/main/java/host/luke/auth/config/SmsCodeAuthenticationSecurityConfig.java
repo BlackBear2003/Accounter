@@ -23,7 +23,7 @@ public class SmsCodeAuthenticationSecurityConfig extends SecurityConfigurerAdapt
 
     @Override
     public void configure(HttpSecurity builder) throws Exception {
-
+        //builder.authorizeHttpRequests().requestMatchers("/test").permitAll().anyRequest().authenticated();
 
         //设置SmsCodeAuthenticationProvider的UserDetailsService
         SmsCodeAuthenticationProvider smsCodeAuthenticationProvider = new SmsCodeAuthenticationProvider();

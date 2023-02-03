@@ -1,8 +1,9 @@
 package host.luke.auth.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import host.luke.auth.security.LoginServiceImpl;
 import host.luke.common.pojo.User;
-import host.luke.common.service.impl.UserServiceImpl;
+import host.luke.auth.service.impl.UserServiceImpl;
 import host.luke.common.utils.ResponseResult;
 import host.luke.common.utils.SnowFlake;
 import jakarta.annotation.Resource;
@@ -13,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -25,6 +25,11 @@ public class LoginController {
     LoginServiceImpl loginService;
     @Resource
     UserServiceImpl userService;
+
+    @GetMapping("/test1")
+    public String test(){
+        return "test!!!!";
+    }
 
     @GetMapping("/login/mobile")
     public ResponseResult getSmsCode(String mobile){
@@ -52,12 +57,19 @@ public class LoginController {
     public ResponseResult ordinaryRegister(User user){
         SnowFlake snowFlake = new SnowFlake(0,0);
         user.setUserId(snowFlake.nextId());
+        QueryWrapper mobileWrapper = new QueryWrapper();
+        mobileWrapper.eq("mobile",user.getMobile());
+        if(!Objects.isNull(userService.getOne(mobileWrapper))){
+            return new ResponseResult<>(405,"手机号已注册");
+        }
+
         try{
             userService.save(user);
         }catch (org.mybatis.spring.MyBatisSystemException e){
             e.printStackTrace();
             return new ResponseResult(405,"用户名重复");
         }
+
         Map<String, Object> map = new HashMap<>();
         map.put("user_id",user.getUserId());
         map.put("username",user.getUsername());
@@ -73,12 +85,18 @@ public class LoginController {
         user.setUserId(snowFlake.nextId());
         user.setUsername(mobile+RandomStringUtils.randomAlphanumeric(4));
         user.setPassword(RandomStringUtils.randomAlphanumeric(8));
+        QueryWrapper mobileWrapper = new QueryWrapper();
+        mobileWrapper.eq("mobile",user.getMobile());
+        if(!Objects.isNull(userService.getOne(mobileWrapper))){
+            return new ResponseResult<>(405,"手机号已注册");
+        }
         try{
             userService.save(user);
         }catch (org.mybatis.spring.MyBatisSystemException e){
             e.printStackTrace();
             return new ResponseResult(405,"用户名重复");
         }
+
         Map<String, Object> map = new HashMap<>();
         map.put("user_id",user.getUserId());
         map.put("username",user.getUsername());

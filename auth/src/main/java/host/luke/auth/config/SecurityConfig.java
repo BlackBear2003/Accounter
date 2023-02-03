@@ -18,6 +18,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AnonymousAuthenticationFilter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
@@ -41,7 +42,8 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         //开启跨域
-
+        //把smsCode校验过滤器添加到过滤器链中
+        http.addFilterAfter(smsCodeFilter, AnonymousAuthenticationFilter.class);
         http.cors().and()
                 //关闭csrf
                 .csrf().disable()
@@ -51,28 +53,26 @@ public class SecurityConfig {
                 .authorizeRequests()
                 // 对于登录接口 允许匿名访问
 
-                .requestMatchers("/auth/login/pwd","/auth/login/mobile").anonymous()//login
-                .requestMatchers("/auth/register/pwd","/auth/register/mobile").anonymous()//register
-                .requestMatchers(HttpMethod.GET, // Swagger的资源路径需要允许访问
-                        "/",
-                        "/swagger-ui.html",
-                        "/swagger-ui/",
+                .requestMatchers("/auth/login/pwd","/auth/login/mobile").permitAll()//login
+                .requestMatchers("/auth/register/pwd","/auth/register/mobile","/auth/test",
+                // Swagger的资源路径需要允许访问
+                        "/context-path/swagger-ui.html",
+                        "/context-path/*",
                         "/*.html",
                         "/favicon.ico",
                         "/*/*.html",
                         "/*/*.css",
                         "/*/*.js",
-                        "/swagger-resources/*",
-                        "/v3/api-docs/*"
-                )
-                .permitAll()
-                .anyRequest().authenticated();
+                        "/context-path/swagger-resources/*",
+                        "/context-path/v3/api-docs",
+                        "/context-path/v3/api-docs/*"
+                ).permitAll()
+                .anyRequest().permitAll();
 
 
         http.headers().frameOptions().sameOrigin();
 
-        //把smsCode校验过滤器添加到过滤器链中
-        http.addFilterBefore(smsCodeFilter, UsernamePasswordAuthenticationFilter.class);
+
 
 
         //告诉security如何处理异常

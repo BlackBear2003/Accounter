@@ -1,4 +1,4 @@
-package host.luke.common.service;
+package host.luke.auth.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import host.luke.common.pojo.User;

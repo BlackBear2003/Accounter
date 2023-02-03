@@ -1,4 +1,4 @@
-package host.luke.common.dao;
+package host.luke.auth.dao;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import host.luke.common.pojo.User;
