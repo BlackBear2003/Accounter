@@ -1,0 +1,39 @@
+mybatis-plus:
+  mapper-locations: classpath:/mapper/*.xml
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  type-aliases-package: host.luke.common.pojo
+server:
+  port: 8080
+spring:
+  application:
+    name: api-server
+  datasource:
+    url: jdbc:mysql://81.68.212.127:3306/Accounter
+    username: root
+    password: onelastkiss
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      auto-commit: false
+      connection-timeout: 5000
+      validation-timeout: 5000
+      max-lifetime: 60000
+      maximum-pool-size: 20
+      minimum-idle: 1
+  data:
+    redis:
+      host: 81.68.212.127
+      password: beautifulworld
+      port: 6379
+      timeout: 10000
+      lettuce:
+        pool:
+          max-active: 8
+          max-idle: 8
+          min-idle: 2
+          max-wait: 1000
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
