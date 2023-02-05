@@ -10,4 +10,6 @@ import java.util.List;
 public interface ConsumptionMapper extends BaseMapper<Consumption> {
     public List<Consumption> getConsByUserId(Long userId);
     public int addCons(Long userId,Long consumptionId);
+
+    public Long findConsOwner(Long consumptionId);
 }

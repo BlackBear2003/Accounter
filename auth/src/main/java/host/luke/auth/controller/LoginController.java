@@ -59,7 +59,7 @@ public class LoginController {
         user.setUserId(snowFlake.nextId());
         QueryWrapper mobileWrapper = new QueryWrapper();
         mobileWrapper.eq("mobile",user.getMobile());
-        if(!Objects.isNull(userService.getOne(mobileWrapper))){
+        if(!Objects.isNull(userService.getOne(mobileWrapper))||user.getMobile()=="-1"){
             return new ResponseResult<>(405,"手机号已注册");
         }
 

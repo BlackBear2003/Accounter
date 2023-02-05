@@ -44,7 +44,10 @@ spring:
           - Path=/auth/**
         filters:
 
-
+      - id: API-SERVER
+        uri: lb://API-SERVER
+        predicates:
+          - Path=/api/**
 
 
       discovery:

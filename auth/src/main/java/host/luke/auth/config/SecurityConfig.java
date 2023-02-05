@@ -54,20 +54,19 @@ public class SecurityConfig {
                 // 对于登录接口 允许匿名访问
 
                 .requestMatchers("/auth/login/pwd","/auth/login/mobile").permitAll()//login
-                .requestMatchers("/auth/register/pwd","/auth/register/mobile","/auth/test",
+                .requestMatchers("/auth/register/pwd","/auth/register/mobile","/auth/test1",
                 // Swagger的资源路径需要允许访问
-                        "/context-path/swagger-ui.html",
-                        "/context-path/*",
+                        "/swagger-ui.html",
                         "/*.html",
                         "/favicon.ico",
                         "/*/*.html",
                         "/*/*.css",
                         "/*/*.js",
-                        "/context-path/swagger-resources/*",
-                        "/context-path/v3/api-docs",
-                        "/context-path/v3/api-docs/*"
+                        "/swagger-resources/*",
+                        "/v3/api-docs",
+                        "/v3/api-docs/*"
                 ).permitAll()
-                .anyRequest().permitAll();
+                .anyRequest().authenticated();
 
 
         http.headers().frameOptions().sameOrigin();
