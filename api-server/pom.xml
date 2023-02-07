@@ -10,6 +10,8 @@
     </parent>
 
     <artifactId>api-server</artifactId>
+    <packaging>jar</packaging>
+
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
@@ -41,5 +43,14 @@
             <version>2.0.2</version>
         </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>

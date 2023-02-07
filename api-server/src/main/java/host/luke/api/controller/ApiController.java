@@ -5,15 +5,21 @@ import host.luke.api.aop.IDCheck;
 import host.luke.api.dao.ConsumptionMapper;
 import host.luke.api.service.impl.ConsumptionServiceImpl;
 import host.luke.common.pojo.Consumption;
+import host.luke.common.utils.DateUtil;
 import host.luke.common.utils.ResponseResult;
 import host.luke.common.utils.SnowFlake;
 import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.beans.propertyeditors.CustomDateEditor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.WebRequest;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api")
@@ -27,98 +33,160 @@ public class ApiController {
 
     @GetMapping("/consumption")
     @IDCheck
-    public ResponseResult getAllConsByUserId(Long userId){
-        Long start = System.currentTimeMillis();
-        List<Consumption> list = consumptionMapper.getConsByUserId(userId);
-        Long end = System.currentTimeMillis();
-        return new ResponseResult(200,"success in "+(end-start)+"ms",list);
+    public ResponseResult getAllConsByUserId(HttpServletRequest request){
+
+        Long userId = Long.valueOf(request.getHeader("userId"));
+
+        List list = consumptionService.getAllConsByUserId(userId);
+        //包装
+        Map<String,Object> map = new HashMap<>();
+        map.put("list",list);
+
+        return new ResponseResult(200,"success",map);
     }
 
     @GetMapping("/consumption/{c_id}")
     @IDCheck
-    public ResponseResult getSingleConsByCid(Long userId, @PathVariable String c_id){
-        Long start = System.currentTimeMillis();
-        if(userId!=consumptionMapper.findConsOwner(Long.valueOf(c_id))){
+    public ResponseResult getSingleConsByCid(HttpServletRequest request, @PathVariable Long c_id){
+
+        Long userId = Long.valueOf(request.getHeader("userId"));
+
+        if(!Objects.equals(userId, consumptionMapper.findConsOwner(c_id))){
             return new ResponseResult(401,"无权查看");
         }
-        Long end = System.currentTimeMillis();
-        return new ResponseResult(200,"success in "+(end-start)+"ms",consumptionService.getById(c_id));
+
+        Consumption consumption = consumptionService.getById(c_id);
+
+        Map<String,Object> map = new HashMap<>();
+        map.put("consumption",consumption);
+
+        return new ResponseResult(200,"success",map);
     }
 
     @PostMapping("/consumption")
     @Transactional
     @IDCheck
-    public ResponseResult addNewCons(Long userId,Consumption consumption){
-        Long start = System.currentTimeMillis();
-        SnowFlake snowFlake = new SnowFlake(0,0);
-        consumption.setConsumptionId(snowFlake.nextId());
-        consumptionService.save(consumption);
-        consumptionMapper.addCons(userId,consumption.getConsumptionId());
-        Long end = System.currentTimeMillis();
-        Map<String,Object> map = new HashMap<>();
-        map.put("consumptionId",consumption.getConsumptionId());
-        return new ResponseResult(200,"success in "+(end-start)+"ms",map);
+    public ResponseResult addNewCons(HttpServletRequest request,@RequestBody Consumption consumption){
+
+        Long userId = Long.valueOf(request.getHeader("userId"));
+
+        if(consumptionService.addNewCons(userId, consumption)){
+            return new ResponseResult(200,"success");
+        }
+        else{
+            return ResponseResult.error();
+        }
     }
 
     @GetMapping("/consumption/amount")
     @IDCheck
-    public ResponseResult getConsByAmount(Long userId,double low,double high){
-        Long start = System.currentTimeMillis();
-        QueryWrapper wrapper = new QueryWrapper();
-        wrapper.between("amount",low,high);
-        wrapper.inSql("consumption_id","select consumption_id from t_user_consumption where user_id = "+userId);
-        List<Consumption> list = consumptionMapper.selectList(wrapper);
-        Long end = System.currentTimeMillis();
-        return new ResponseResult(200,"success in "+(end-start)+"ms",list);
+    public ResponseResult getConsByAmount(HttpServletRequest request,double low,double high){
+
+        Long userId = Long.valueOf(request.getHeader("userId"));
+
+        List list = consumptionService.getConsByAmount(userId,low,high);
+
+        Map<String,Object> map = new HashMap<>();
+        map.put("list",list);
+
+        return new ResponseResult(200,"success",map);
     }
     @GetMapping("/consumption/type")
     @IDCheck
-    public ResponseResult getConsByType(Long userId,String type){
-        Long start = System.currentTimeMillis();
-        QueryWrapper wrapper = new QueryWrapper();
-        wrapper.eq("type",type);
-        wrapper.inSql("consumption_id","select consumption_id from t_user_consumption where user_id = "+userId);
-        List<Consumption> list = consumptionMapper.selectList(wrapper);
-        Long end = System.currentTimeMillis();
-        return new ResponseResult(200,"success in "+(end-start)+"ms",list);
-    }
-    @GetMapping("/consumption/year")
-    @IDCheck
-    public ResponseResult getConsByYear(Long userId,Integer year){
-        Long start = System.currentTimeMillis();
-        QueryWrapper wrapper = new QueryWrapper();
-        wrapper.eq("year",year);
-        wrapper.inSql("consumption_id","select consumption_id from t_user_consumption where user_id = "+userId);
-        List<Consumption> list = consumptionMapper.selectList(wrapper);
-        Long end = System.currentTimeMillis();
-        return new ResponseResult(200,"success in "+(end-start)+"ms",list);
-    }
-    @GetMapping("/consumption/month")
-    @IDCheck
-    public ResponseResult getConsByMonth(Long userId,Integer month,Integer year){
-        Long start = System.currentTimeMillis();
-        QueryWrapper wrapper = new QueryWrapper();
-        wrapper.eq("month",month);
-        wrapper.eq("year",year);
-        wrapper.inSql("consumption_id","select consumption_id from t_user_consumption where user_id = "+userId);
-        List<Consumption> list = consumptionMapper.selectList(wrapper);
-        Long end = System.currentTimeMillis();
-        return new ResponseResult(200,"success in "+(end-start)+"ms",list);
-    }
-    @GetMapping("/consumption/day")
-    @IDCheck
-    public ResponseResult getConsByDay(Long userId,Integer day,Integer month,Integer year){
-        Long start = System.currentTimeMillis();
-        QueryWrapper wrapper = new QueryWrapper();
-        wrapper.eq("day",day);
-        wrapper.eq("month",month);
-        wrapper.eq("year",year);
-        wrapper.inSql("consumption_id","select consumption_id from t_user_consumption where user_id = "+userId);
-        List<Consumption> list = consumptionMapper.selectList(wrapper);
-        Long end = System.currentTimeMillis();
-        return new ResponseResult(200,"success in "+(end-start)+"ms",list);
+    public ResponseResult getConsByType(HttpServletRequest request,String type){
+
+        Long userId = Long.valueOf(request.getHeader("userId"));
+
+        List<Consumption> list = consumptionService.getConsByType(userId,type);
+
+        Map<String,Object> map = new HashMap<>();
+        map.put("list",list);
+
+        return new ResponseResult(200,"success",map);
     }
 
+
+
+    @GetMapping("/consumption/year")
+    @IDCheck
+    public ResponseResult getCurYearCons(HttpServletRequest request, Date date){
+
+        Long userId = Long.valueOf(request.getHeader("userId"));
+
+        List list = consumptionService.getCurYearCons(userId,date);
+
+        Map<String,Object> map = new HashMap<>();
+        map.put("list",list);
+
+        return new ResponseResult(200,"success",map);
+    }
+
+
+    @GetMapping("/consumption/month")
+    @IDCheck
+    public ResponseResult getCurMonthCons(HttpServletRequest request, Date date){
+
+        Long userId = Long.valueOf(request.getHeader("userId"));
+
+        List list = consumptionService.getCurMonthCons(userId,date);
+
+        Map<String,Object> map = new HashMap<>();
+        map.put("list",list);
+
+        return new ResponseResult(200,"success",map);
+    }
+
+
+    @GetMapping("/consumption/day")
+    @IDCheck
+    public ResponseResult getCurDayCons(HttpServletRequest request, Date date){
+
+        Long userId = Long.valueOf(request.getHeader("userId"));
+
+        List list = consumptionService.getCurDayCons(userId,date);
+
+        Map<String,Object> map = new HashMap<>();
+        map.put("list",list);
+
+        return new ResponseResult(200,"success",map);
+    }
+
+    @GetMapping("/consumption/week")
+    @IDCheck
+    public ResponseResult getCurWeekCons(HttpServletRequest request, Date date){
+
+        Long userId = Long.valueOf(request.getHeader("userId"));
+
+        List list = consumptionService.getCurWeekCons(userId,date);
+
+        Map<String,Object> map = new HashMap<>();
+        map.put("list",list);
+        map.put("weekNo",DateUtil.getYearWeekIndex(date));
+        map.put("weekday",DateUtil.getWeekDay(date));
+
+        return new ResponseResult(200,"success",map);
+    }
+    @GetMapping("/consumption/quarter")
+    @IDCheck
+    public ResponseResult getCurQuarterCons(HttpServletRequest request, Date date){
+
+        Long userId = Long.valueOf(request.getHeader("userId"));
+
+        List list = consumptionService.getCurQuarterCons(userId,date);
+
+        Map<String,Object> map = new HashMap<>();
+        map.put("list",list);
+        map.put("quarterNo",DateUtil.getYearQuarterIndex(date));
+
+        return new ResponseResult(200,"success",map);
+    }
+
+    @InitBinder
+    public void initBinder(WebDataBinder binder) {
+        //转换日期
+        DateFormat dateFormat =new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        binder.registerCustomEditor(Date.class, new CustomDateEditor(dateFormat , true));
+    }
 
 
 }

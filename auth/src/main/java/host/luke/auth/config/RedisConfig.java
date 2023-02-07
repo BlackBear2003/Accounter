@@ -1,4 +1,4 @@
-package host.luke.common.config;
+package host.luke.auth.config;
 
 import com.alibaba.fastjson.support.spring.FastJsonRedisSerializer;
 import org.springframework.context.annotation.Bean;
@@ -30,8 +30,4 @@ public class RedisConfig {
         template.afterPropertiesSet();
         return template;
     }
-
-
-
-
 }

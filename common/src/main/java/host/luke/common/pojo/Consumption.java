@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
+import java.util.Date;
+
 @Data
 @TableName("t_consumption")
 public class Consumption {
@@ -12,9 +14,6 @@ public class Consumption {
     private Double amount;
     private String type;//dinning travel entertainment study daily others
     private String store;
-    private Integer year;
-    private Integer month;
-    private Integer day;
-
+    private Date consumeTime;
 
 }
