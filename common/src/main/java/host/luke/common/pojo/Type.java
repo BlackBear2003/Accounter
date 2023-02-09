@@ -4,16 +4,16 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
-import java.util.Date;
-
 @Data
-@TableName("t_consumption")
-public class Consumption {
+@TableName("t_type")
+public class Type {
+
     @TableId
-    private Long consumptionId;
-    private Double amount;
     private Integer typeId;
-    private String store;
-    private Date consumeTime;
+
+    private String typeName;
+    private Integer level;
+    private Integer parentId;
+
 
 }

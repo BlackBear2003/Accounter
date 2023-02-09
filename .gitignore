@@ -2,3 +2,5 @@
 /auth/target/
 /common/target/
 /eureka-server/target/
+/gateway/target/
+/api-server/target/

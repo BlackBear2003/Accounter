@@ -35,6 +35,7 @@ public class CacheConfig {
                 .disableCachingNullValues();
         Set<String> cacheNames = new HashSet<>();
         cacheNames.add("ConsumptionCache");
+        cacheNames.add("TypeCache");
         return  RedisCacheManager.builder(redisConnectionFactory).cacheDefaults(config).initialCacheNames(cacheNames).build();
     }
 

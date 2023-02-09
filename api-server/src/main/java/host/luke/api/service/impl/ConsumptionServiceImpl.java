@@ -59,15 +59,7 @@ public class ConsumptionServiceImpl extends ServiceImpl<ConsumptionMapper, Consu
         return (List<Consumption>) consumptionMapper.selectList(wrapper);
     }
 
-    @Override
-    public List getConsByType(Long userId, String type){
 
-        QueryWrapper wrapper = new QueryWrapper();
-        wrapper.eq("type",type);
-        wrapper.inSql("consumption_id","select consumption_id from t_user_consumption where user_id = "+userId);
-
-        return consumptionMapper.selectList(wrapper);
-    }
 
 
 

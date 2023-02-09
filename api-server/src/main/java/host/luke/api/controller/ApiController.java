@@ -7,15 +7,12 @@ import host.luke.api.service.impl.ConsumptionServiceImpl;
 import host.luke.common.pojo.Consumption;
 import host.luke.common.utils.DateUtil;
 import host.luke.common.utils.ResponseResult;
-import host.luke.common.utils.SnowFlake;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.context.request.WebRequest;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -23,6 +20,7 @@ import java.util.*;
 
 @RestController
 @RequestMapping("/api")
+@SuppressWarnings({"unchecked","rawtypes"})
 public class ApiController {
     @Resource
     private ConsumptionServiceImpl consumptionService;
@@ -78,6 +76,44 @@ public class ApiController {
         }
     }
 
+    @GetMapping("/consumption/out")
+    @IDCheck
+    public ResponseResult getOutPaidCons(HttpServletRequest request){
+
+        Long userId = Long.valueOf(request.getHeader("userId"));
+
+        QueryWrapper wrapper = new QueryWrapper();
+        //小于0的
+        wrapper.lt("amount",0);
+        wrapper.inSql("consumption_id","select consumption_id from t_user_consumption where user_id = "+userId);
+        List list = consumptionService.list(wrapper);
+
+        Map<String,Object> map = new HashMap<>();
+        map.put("list",list);
+
+        return new ResponseResult(200,"success",map);
+    }
+
+    @GetMapping("/consumption/in")
+    @IDCheck
+    public ResponseResult getInEarnedCons(HttpServletRequest request){
+
+        Long userId = Long.valueOf(request.getHeader("userId"));
+
+        QueryWrapper wrapper = new QueryWrapper();
+        //大于0
+        wrapper.gt("amount",0);
+        wrapper.inSql("consumption_id","select consumption_id from t_user_consumption where user_id = "+userId);
+        List list = consumptionService.list(wrapper);
+
+        Map<String,Object> map = new HashMap<>();
+        map.put("list",list);
+
+        return new ResponseResult(200,"success",map);
+    }
+
+
+
     @GetMapping("/consumption/amount")
     @IDCheck
     public ResponseResult getConsByAmount(HttpServletRequest request,double low,double high){
@@ -91,19 +127,7 @@ public class ApiController {
 
         return new ResponseResult(200,"success",map);
     }
-    @GetMapping("/consumption/type")
-    @IDCheck
-    public ResponseResult getConsByType(HttpServletRequest request,String type){
 
-        Long userId = Long.valueOf(request.getHeader("userId"));
-
-        List<Consumption> list = consumptionService.getConsByType(userId,type);
-
-        Map<String,Object> map = new HashMap<>();
-        map.put("list",list);
-
-        return new ResponseResult(200,"success",map);
-    }
 
 
 

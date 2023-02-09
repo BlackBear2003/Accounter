@@ -19,7 +19,6 @@ public interface ConsumptionService extends IService<Consumption> {
 
     List getConsByAmount(Long userId, double low, double high);
 
-    List getConsByType(Long userId, String type);
 
     List getCurYearCons(Long userId, Date date);
 
