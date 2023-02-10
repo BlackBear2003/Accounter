@@ -40,5 +40,5 @@ eureka:
 
 tencent:
   cloud:
-    SecretId: AKIDjE5cts5qCS2DoOzkWxrL5rqyqf4VqzES
-    SecretKey: s5HCtAXBiU1uSLnY3pa6XUeBMGwjWFGE
+    SecretId: nicai
+    SecretKey: nicai
