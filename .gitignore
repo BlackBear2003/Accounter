@@ -1,5 +1,6 @@
 # Project exclude paths
 /auth/target/
+/auth/src/main/resources/application.yml
 /common/target/
 /eureka-server/target/
 /gateway/target/
