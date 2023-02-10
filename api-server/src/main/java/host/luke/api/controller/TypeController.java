@@ -57,8 +57,9 @@ public class TypeController {
         QueryWrapper queryWrapper = new QueryWrapper();
         queryWrapper.eq("type_name",levelOneType);
         Type type = typeService.getOne(queryWrapper);
+        System.out.println(type);
 
-        List list = typeService.getSonListByParentId(type.getParentId());
+        List list = typeService.getSonListByParentId(type.getTypeId());
 
         Map<String,Object> map = new HashMap<>();
         map.put("list",list);

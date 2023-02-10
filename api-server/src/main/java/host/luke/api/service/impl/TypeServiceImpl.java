@@ -60,6 +60,7 @@ public class TypeServiceImpl extends ServiceImpl<TypeMapper, Type> implements Ty
         QueryWrapper queryWrapper = new QueryWrapper();
         queryWrapper.eq("type_name",typeName);
         Type type = typeMapper.selectOne(queryWrapper);
+        System.out.println(type);
 
         //level = 1 , should get all son
         if(type.getLevel()==1){
@@ -69,7 +70,7 @@ public class TypeServiceImpl extends ServiceImpl<TypeMapper, Type> implements Ty
             wrapper.inSql("consumption_id","select consumption_id from t_user_consumption where user_id = "+userId);
             wrapper.in("type_id",idList);
 
-            return consumptionMapper.selectBatchIds(idList);
+            return consumptionMapper.selectList(wrapper);
         }
         else if(type.getLevel()==2){
             QueryWrapper wrapper = new QueryWrapper();

@@ -1,6 +1,7 @@
 package host.luke.auth.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import host.luke.auth.component.SmsCodeSender;
 import host.luke.auth.security.LoginServiceImpl;
 import host.luke.common.pojo.User;
 import host.luke.auth.service.impl.UserServiceImpl;
@@ -25,6 +26,8 @@ public class LoginController {
     LoginServiceImpl loginService;
     @Resource
     UserServiceImpl userService;
+    @Resource
+    SmsCodeSender smsCodeSender;
 
     @GetMapping("/test1")
     public String test(){
@@ -34,6 +37,7 @@ public class LoginController {
     @GetMapping("/login/mobile")
     public ResponseResult getSmsCode(String mobile){
         String smsCode = loginService.storeSmsCode(mobile);
+        smsCodeSender.send(mobile,smsCode);
         System.out.println("模拟发送短信到手机号："+mobile+"------验证码为"+smsCode);
         return new ResponseResult<>(200,"success");
     }
@@ -106,6 +110,7 @@ public class LoginController {
     @GetMapping("/register/mobile")
     public ResponseResult getRegisterCode(String mobile){
         String smsCode = loginService.storeSmsCode(mobile);
+        smsCodeSender.send(mobile,smsCode);
         System.out.println("模拟发送短信到手机号："+mobile+"------验证码为"+smsCode);
         return new ResponseResult<>(200,"success");
     }
