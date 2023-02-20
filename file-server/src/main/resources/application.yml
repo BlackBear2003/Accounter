@@ -1,0 +1,22 @@
+server:
+  port: 8082
+
+spring:
+  servlet:
+    multipart:
+      max-file-size: 2MB
+      max-request-size: 10MB
+  datasource:
+    url: jdbc:mysql://81.68.212.127:3306/Accounter
+    username: root
+    password: onelastkiss
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      auto-commit: false
+      connection-timeout: 5000
+      validation-timeout: 5000
+      max-lifetime: 60000
+      maximum-pool-size: 20
+      minimum-idle: 1
+file:
+  path: E:\MyProject\Accounter-file\

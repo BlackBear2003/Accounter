@@ -11,6 +11,8 @@ import java.util.Date;
 public class Consumption {
     @TableId
     private Long consumptionId;
+    private String consumptionName;
+    private String description;
     private Double amount;
     private Integer typeId;
     private String store;
