@@ -17,5 +17,6 @@ public class Consumption {
     private Integer typeId;
     private String store;
     private Date consumeTime;
+    private String credential;
 
 }
