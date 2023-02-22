@@ -1,6 +1,8 @@
 package host.luke.textin.controller;
 
+import host.luke.common.pojo.Consumption;
 import host.luke.common.utils.ResponseResult;
+import host.luke.textin.service.FunctionService;
 import host.luke.textin.service.PreprocessService;
 import jakarta.annotation.Resource;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,6 +21,8 @@ public class TextInApiController {
 
     @Resource
     PreprocessService preprocessService;
+    @Resource
+    FunctionService functionService;
 
     @PostMapping("/dewarp")
     public ResponseResult trimAndCorrect(String fileName){
@@ -38,12 +42,123 @@ public class TextInApiController {
         Map res = new HashMap();
         res.put("imgUrl",newFilePath);
         return new ResponseResult(200,"success",res);
+    }
 
+    @PostMapping("/crop_enhance")
+    public ResponseResult cropAndEnhance(String fileName){
+
+        String newFilePath = null;
+
+        try {
+            newFilePath = preprocessService.cropAndEnhance(fileName);
+        }catch (RuntimeException | IOException e){
+            e.printStackTrace();
+            return ResponseResult.error();
+        }
+
+        if(Objects.isNull(newFilePath)){
+            return ResponseResult.error();
+        }
+        Map res = new HashMap();
+        res.put("imgUrl",newFilePath);
+        return new ResponseResult(200,"success",res);
+    }
+
+    @PostMapping("/demoire")
+    public ResponseResult demoire(String fileName){
+
+        String newFilePath = null;
+
+        try {
+            newFilePath = preprocessService.demoire(fileName);
+        }catch (RuntimeException | IOException e){
+            e.printStackTrace();
+            return ResponseResult.error();
+        }
+
+        if(Objects.isNull(newFilePath)){
+            return ResponseResult.error();
+        }
+        Map res = new HashMap();
+        res.put("imgUrl",newFilePath);
+        return new ResponseResult(200,"success",res);
+    }
+
+    @PostMapping("/water_mark")
+    public ResponseResult waterMarkRemove(String fileName){
+
+        String newFilePath = null;
+
+        try {
+            newFilePath = preprocessService.watermarkRemove(fileName);
+        }catch (RuntimeException | IOException e){
+            e.printStackTrace();
+            return ResponseResult.error();
+        }
+
+        if(Objects.isNull(newFilePath)){
+            return ResponseResult.error();
+        }
+        Map res = new HashMap();
+        res.put("imgUrl",newFilePath);
+        return new ResponseResult(200,"success",res);
     }
 
 
+    @PostMapping("/handwritten_erase")
+    public ResponseResult handwrittenErase(String fileName){
+
+        String newFilePath = null;
+
+        try {
+            newFilePath = preprocessService.handwrittenErase(fileName);
+        }catch (RuntimeException | IOException e){
+            e.printStackTrace();
+            return ResponseResult.error();
+        }
+
+        if(Objects.isNull(newFilePath)){
+            return ResponseResult.error();
+        }
+        Map res = new HashMap();
+        res.put("imgUrl",newFilePath);
+        return new ResponseResult(200,"success",res);
+    }
 
 
+    @PostMapping("/common_receipt")
+    public ResponseResult commonReceipt(String fileName){
 
+        Consumption consumption = null;
+
+        try {
+            consumption = functionService.commonReceipt(fileName);
+        }catch (RuntimeException e){
+            e.printStackTrace();
+            return ResponseResult.error();
+        }
+        Map res = new HashMap();
+        res.put("consumption",consumption);
+
+        return new ResponseResult(200,"success",res);
+    }
+
+
+    @PostMapping("/train_ticket")
+    public ResponseResult trainTicket(String fileName){
+
+        Consumption consumption = null;
+
+        try {
+            consumption = functionService.commonReceipt(fileName);
+        }catch (RuntimeException e){
+            e.printStackTrace();
+            return ResponseResult.error();
+        }
+        Map res = new HashMap();
+        res.put("consumption",consumption);
+
+        return new ResponseResult(200,"success",res);
+    }
 
 }
