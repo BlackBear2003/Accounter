@@ -150,7 +150,7 @@ public class TextInApiController {
         Consumption consumption = null;
 
         try {
-            consumption = functionService.commonReceipt(fileName);
+            consumption = functionService.trainTicket(fileName);
         }catch (RuntimeException e){
             e.printStackTrace();
             return ResponseResult.error();

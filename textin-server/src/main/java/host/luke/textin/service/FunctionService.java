@@ -96,9 +96,6 @@ public class FunctionService {
             if(json.getString("key").equals("sku")){
                 consumption.setDescription(json.getString("value"));
             }
-            if(json.getString("key").equals("date")){
-                consumption.setConsumeTime(json.getDate("value"));
-            }
         }
 
         consumption.setTypeId(0);
@@ -213,15 +210,15 @@ public class FunctionService {
         consumption.setAmount(price);
         consumption.setTypeId(13);
         consumption.setConsumptionName("从"+departureStation+"出发到"+arrivalStation+"的火车"+ticketClass);
-        consumption.setDescription("火车票红色编码"+ticketNumber+
-                "出发站"+departureStation+"\n"+
-                "车次号"+trainNumber+"\n"+
-                "目的地"+arrivalStation+"\n"+
-                "出发时间"+departureDate+"\n"+
-                "价格"+price+"\n"+
-                "车票等级"+ticketClass+"\n"+
-                "乘车人姓名"+passengerName+"\n"+
-                "车座号"+seatNumber);
+        consumption.setDescription("火车票红色编码:"+ticketNumber+","+
+                "出发站:"+departureStation+","+
+                "车次号:"+trainNumber+","+
+                "目的地:"+arrivalStation+","+
+                "出发时间:"+departureDate+","+
+                "价格:"+price+","+
+                "车票等级:"+ticketClass+","+
+                "乘车人姓名:"+passengerName+","+
+                "车座号:"+seatNumber);
         return consumption;
 
     }
