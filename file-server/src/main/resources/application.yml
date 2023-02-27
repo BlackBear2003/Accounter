@@ -2,6 +2,8 @@ server:
   port: 8082
 
 spring:
+  application:
+    name: file-server
   servlet:
     multipart:
       max-file-size: 5MB
@@ -19,4 +21,11 @@ spring:
       maximum-pool-size: 20
       minimum-idle: 1
 file:
-  path: E:\MyProject\Accounter-file\
+  path:
+    win: E:\MyProject\Accounter-file\
+    mac: /Library/MyProjects/Accounter-file/
+    linux: /tmp/file/
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka

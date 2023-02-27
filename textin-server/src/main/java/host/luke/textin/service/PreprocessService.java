@@ -29,8 +29,28 @@ public class PreprocessService {
     @Value("${textin.SECRETCODE}")
     private String SECRETCODE;
 
-    @Value("${file.path}")
-    private String filePath;
+    @Value("${file.win.path}")
+    String winPath ;
+    @Value("${file.mac.path}")
+    String macPath ;
+    @Value("${file.linux.path}")
+    String linuxPath ;
+
+
+    public String judgeEnvPath(){
+        String osName = System.getProperty("os.name");
+        osName = osName.toLowerCase();
+        if(osName.startsWith("win")){
+            return winPath;
+        }
+        if(osName.startsWith("mac")){
+            return macPath;
+        }
+        if(osName.startsWith("linux")){
+            return linuxPath;
+        }
+        return null;
+    }
 
 
     /**
@@ -40,6 +60,7 @@ public class PreprocessService {
      * @throws IOException
      */
     public String trimAndCorrect(String fileName) throws IOException {
+        String filePath = judgeEnvPath();
 
         // 文档图像切边矫正
         String url = "https://api.textin.com/ai/service/v1/dewarp";
@@ -107,6 +128,7 @@ public class PreprocessService {
      * @throws IOException
      */
     public String cropAndEnhance(String fileName) throws IOException {
+        String filePath = judgeEnvPath();
 
         // 图片切边增强
         String url = "https://api.textin.com/ai/service/v1/crop_enhance_image";
@@ -173,6 +195,7 @@ public class PreprocessService {
      * @throws IOException
      */
     public String demoire(String fileName) throws IOException {
+        String filePath = judgeEnvPath();
 
         // 去屏幕纹
         String url = "https://api.textin.com/ai/service/v1/demoire";
@@ -240,6 +263,7 @@ public class PreprocessService {
      * @throws IOException
      */
     public String watermarkRemove(String fileName) throws IOException {
+        String filePath = judgeEnvPath();
 
         // 图像水印去除
         String url = "https://api.textin.com/ai/service/v1/image/watermark_remove";
@@ -306,6 +330,7 @@ public class PreprocessService {
      * @throws IOException
      */
     public String handwrittenErase(String fileName) throws IOException {
+        String filePath = judgeEnvPath();
         // 自动擦除手写文字
         String url = "https://api.textin.com/ai/service/v1/handwritten_erase";
         // 请登录后前往 “工作台-账号设置-开发者信息” 查看 x-ti-app-id

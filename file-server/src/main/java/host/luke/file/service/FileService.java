@@ -14,12 +14,34 @@ import java.util.UUID;
 @Component
 public class FileService {
 
-    @Value("${file.path}")
-    private String filePath;
+    @Value("${file.win.path}")
+    String winPath ;
+    @Value("${file.mac.path}")
+    String macPath ;
+    @Value("${file.linux.path}")
+    String linuxPath ;
+
+
+    public String judgeEnvPath(){
+        String osName = System.getProperty("os.name");
+        osName = osName.toLowerCase();
+        if(osName.startsWith("win")){
+            return winPath;
+        }
+        if(osName.startsWith("mac")){
+            return macPath;
+        }
+        if(osName.startsWith("linux")){
+            return linuxPath;
+        }
+        return null;
+    }
+
 
 
 
     public List<String> upload(MultipartFile[] multipartFiles){
+        String filePath = judgeEnvPath();
 
         List<String> fileURLList = new ArrayList<>();
         for (MultipartFile file :

@@ -22,10 +22,32 @@ public class FunctionService {
     @Value("${textin.SECRETCODE}")
     private String SECRETCODE;
 
-    @Value("${file.path}")
-    private String filePath;
+    @Value("${file.win.path}")
+    String winPath ;
+    @Value("${file.mac.path}")
+    String macPath ;
+    @Value("${file.linux.path}")
+    String linuxPath ;
+
+
+    public String judgeEnvPath(){
+        String osName = System.getProperty("os.name");
+        osName = osName.toLowerCase();
+        if(osName.startsWith("win")){
+            return winPath;
+        }
+        if(osName.startsWith("mac")){
+            return macPath;
+        }
+        if(osName.startsWith("linux")){
+            return linuxPath;
+        }
+        return null;
+    }
+
 
     public Consumption commonReceipt(String fileName){
+        String filePath = judgeEnvPath();
         // 商铺小票识别
         String url = "https://api.textin.com/robot/v1.0/api/receipt";
         // 请登录后前往 “工作台-账号设置-开发者信息” 查看 x-ti-app-id
@@ -105,6 +127,7 @@ public class FunctionService {
     }
 
     public Consumption trainTicket(String fileName){
+        String filePath = judgeEnvPath();
         // 火车票识别
         String url = "https://api.textin.com/robot/v1.0/api/train_ticket";
         // 请登录后前往 “工作台-账号设置-开发者信息” 查看 x-ti-app-id
