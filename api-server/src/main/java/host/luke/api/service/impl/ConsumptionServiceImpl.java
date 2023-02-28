@@ -1,8 +1,6 @@
 package host.luke.api.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import host.luke.api.dao.ConsumptionMapper;
 import host.luke.api.service.ConsumptionService;
@@ -35,6 +33,18 @@ public class ConsumptionServiceImpl extends ServiceImpl<ConsumptionMapper, Consu
 
         return consumptionMapper.selectById(c_id);
     }
+
+
+    @Override
+    public Double getBalanceOfAll(Long userId){
+        return consumptionMapper.getBalanceOfAll(userId);
+    }
+
+    @Override
+    public Double getBalanceOfDateTime(Long userId, Date startDate, Date endDate){
+        return consumptionMapper.getBalanceOfDateTime(userId,startDate,endDate);
+    }
+
 
     @Override
     @Transactional

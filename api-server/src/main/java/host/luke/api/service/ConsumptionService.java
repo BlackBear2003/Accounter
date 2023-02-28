@@ -14,6 +14,10 @@ public interface ConsumptionService extends IService<Consumption> {
 
     Consumption getSingleConsByCid(String c_id);
 
+    Double getBalanceOfAll(Long userId);
+
+    Double getBalanceOfDateTime(Long userId, Date startDate, Date endDate);
+
     @Transactional
     Boolean addNewCons(Long userId, Consumption consumption);
 

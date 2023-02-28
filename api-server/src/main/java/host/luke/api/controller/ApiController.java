@@ -76,6 +76,40 @@ public class ApiController {
         }
     }
 
+    /**
+     * 获取用户总的结余
+     * @param request
+     * @return
+     */
+    @GetMapping("/consumption/balance")
+    @IDCheck
+    public ResponseResult getBalanceOfAll(HttpServletRequest request){
+
+        Long userId = Long.valueOf(request.getHeader("userId"));
+
+        Double balance = consumptionService.getBalanceOfAll(userId);
+
+        Map<String,Object> map = new HashMap<>();
+        map.put("balance",balance);
+
+        return new ResponseResult(200,"success",map);
+    }
+
+    @GetMapping("/consumption/balance/day")
+    @IDCheck
+    public ResponseResult getBalanceOfDay(HttpServletRequest request,Date date ){
+
+        Long userId = Long.valueOf(request.getHeader("userId"));
+        
+        Double balance = consumptionService.getBalanceOfDateTime(userId,DateUtil.getDayStartTime(date),DateUtil.getDayEndTime(date));
+
+        Map<String,Object> map = new HashMap<>();
+        map.put("balance",balance);
+
+        return new ResponseResult(200,"success",map);
+    }
+
+
     @GetMapping("/consumption/out")
     @IDCheck
     public ResponseResult getOutPaidCons(HttpServletRequest request){

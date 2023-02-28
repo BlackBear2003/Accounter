@@ -18,4 +18,17 @@
         select user_id from t_user_consumption where consumption_id = #{consumption_id}
     </select>
 
+    <select id="getBalanceOfAll" parameterType="Long" resultType="Double">
+        select sum(amount)
+        from t_consumption
+        where consumption_id in (select consumption_id from t_user_consumption where user_id = #{userId} );
+    </select>
+
+    <select id="getBalanceOfDateTime" resultType="Double">
+        select sum(amount)
+        from t_consumption
+        where (consume_time between #{startDate} and #{endDate})
+          and ( consumption_id in (select consumption_id from t_user_consumption where user_id = #{userId} ));
+    </select>
+
 </mapper>
