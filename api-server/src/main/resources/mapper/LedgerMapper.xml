@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="host.luke.api.dao.LedgerMapper">
+
+    <insert id="addConsForLedger">
+        insert into t_ledger_consumption (ledger_id,consumption_id)
+        values (#{lid},#{cid});
+    </insert>
+
+    <delete id="dropConsForLedger">
+        delete
+        from t_ledger_consumption
+        where ledger_id = #{lid} and consumption_id = #{cid};
+    </delete>
+
+    <select id="getConsIdByLedgerId" parameterType="Integer" resultType="Long">
+        select consumption_id
+        from t_ledger_consumption
+        where ledger_id = #{ledger_id};
+    </select>
+
+    <select id="getBalance" resultType="Double">
+        select sum(amount)
+        from t_consumption
+        where  consumption_id in (select consumption_id from t_ledger_consumption where ledger_id = #{ledgerId});
+    </select>
+
+</mapper>

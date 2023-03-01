@@ -21,7 +21,7 @@ import java.util.*;
 @RestController
 @RequestMapping("/api")
 @SuppressWarnings({"unchecked","rawtypes"})
-public class ApiController {
+public class ConsumptionController {
     @Resource
     private ConsumptionServiceImpl consumptionService;
     @Resource
