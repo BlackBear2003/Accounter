@@ -16,6 +16,30 @@ public class DateUtil {
 
 
 
+
+    public static Date getLastAMonthTime(Date date){
+        Calendar c = Calendar.getInstance();
+        c.setTime(date);
+        //c.add(java.util.Calendar.DATE, -7); // 向前一周；如果需要向后一周，用正数即可
+        c.add(Calendar.MONTH, -1); // 向前一月；如果需要向后一月，用正数即可
+        return c.getTime();
+    }
+
+    public static Date getLastAWeekTime(Date date){
+        Calendar c = Calendar.getInstance();
+        c.setTime(date);
+        c.add(java.util.Calendar.DATE, -7); // 向前一周；如果需要向后一周，用正数即可
+        //c.add(Calendar.MONTH, -1); // 向前一月；如果需要向后一月，用正数即可
+        return c.getTime();
+    }
+
+    public static Date getLastAYearTime(Date date){
+        Calendar c = Calendar.getInstance();
+        c.setTime(date);
+        c.add(Calendar.YEAR, -1);
+        return c.getTime();
+    }
+
     /**
      * 获得本天的开始时间
      *

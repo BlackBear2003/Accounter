@@ -199,6 +199,35 @@ public class ApiController {
         return new ResponseResult(200,"success",map);
     }
 
+    @GetMapping("/consumption/last/week")
+    @IDCheck
+    public ResponseResult getLastWeekCons(HttpServletRequest request,Date date){
+
+        Long userId = Long.valueOf(request.getHeader("userId"));
+
+        List list = consumptionService.getLastWeekCons(userId,date);
+
+        Map<String,Object> map = new HashMap<>();
+        map.put("list",list);
+
+        return new ResponseResult(200,"success",map);
+
+    }
+    @GetMapping("/consumption/last/year")
+    @IDCheck
+    public ResponseResult getLastYearCons(HttpServletRequest request,Date date){
+
+        Long userId = Long.valueOf(request.getHeader("userId"));
+
+        List list = consumptionService.getLastYearCons(userId,date);
+
+        Map<String,Object> map = new HashMap<>();
+        map.put("list",list);
+
+        return new ResponseResult(200,"success",map);
+
+    }
+
 
     @GetMapping("/consumption/day")
     @IDCheck

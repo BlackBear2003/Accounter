@@ -100,6 +100,37 @@ public class ConsumptionServiceImpl extends ServiceImpl<ConsumptionMapper, Consu
     }
 
     @Override
+    public List getLastMonthCons(Long userId, Date date){
+
+        QueryWrapper wrapper = new QueryWrapper();
+        wrapper.between("consume_time", DateUtil.getLastAMonthTime(date),date);
+        wrapper.inSql("consumption_id","select consumption_id from t_user_consumption where user_id = "+userId);
+
+
+        return consumptionMapper.selectList(wrapper);
+    }
+    @Override
+    public List getLastWeekCons(Long userId, Date date){
+
+        QueryWrapper wrapper = new QueryWrapper();
+        wrapper.between("consume_time", DateUtil.getLastAWeekTime(date),date);
+        wrapper.inSql("consumption_id","select consumption_id from t_user_consumption where user_id = "+userId);
+
+
+        return consumptionMapper.selectList(wrapper);
+    }
+    @Override
+    public List getLastYearCons(Long userId, Date date){
+
+        QueryWrapper wrapper = new QueryWrapper();
+        wrapper.between("consume_time", DateUtil.getLastAYearTime(date),date);
+        wrapper.inSql("consumption_id","select consumption_id from t_user_consumption where user_id = "+userId);
+
+
+        return consumptionMapper.selectList(wrapper);
+    }
+
+    @Override
     public List getCurDayCons(Long userId, Date date){
 
         QueryWrapper wrapper = new QueryWrapper();

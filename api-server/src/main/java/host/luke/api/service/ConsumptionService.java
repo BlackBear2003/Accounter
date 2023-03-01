@@ -28,6 +28,12 @@ public interface ConsumptionService extends IService<Consumption> {
 
     List getCurMonthCons(Long userId, Date date);
 
+    List getLastWeekCons(Long userId, Date date);
+
+    List getLastMonthCons(Long userId, Date date);
+
+    List getLastYearCons(Long userId, Date date);
+
     List getCurDayCons(Long userId, Date date);
 
     List getCurWeekCons(Long userId, Date date);
