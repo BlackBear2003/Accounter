@@ -1,11 +1,17 @@
 FROM openjdk:17.0.2-jdk-oracle
 MAINTAINER "luke <348358584@qq.com>"
-VOLUME /tmp
+VOLUME /tmp/file
 COPY eureka-server-1.0.jar /eureka.jar
 COPY gateway-1.0.jar /gateway.jar
 COPY auth-1.0.jar /auth.jar
 COPY api-server-1.0.jar /api.jar
+COPY file-server-1.0.jar /file.jar
+COPY textin-server-1.0.jar /ti.jar
 
 COPY entrypoint.sh /entrypoint.sh
+
+
+
+
 ENTRYPOINT ["sh","entrypoint.sh"]
 EXPOSE 80
