@@ -3,6 +3,7 @@ package host.luke.textin.service;
 import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONObject;
 import host.luke.common.pojo.Consumption;
+import host.luke.common.utils.DateUtil;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -10,6 +11,8 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
 
@@ -22,11 +25,15 @@ public class FunctionService {
     @Value("${textin.SECRETCODE}")
     private String SECRETCODE;
 
-    @Value("${file.win.path}")
+
+    private final static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+
+    @Value("${file.path.win}")
     String winPath ;
-    @Value("${file.mac.path}")
+    @Value("${file.path.mac}")
     String macPath ;
-    @Value("${file.linux.path}")
+    @Value("${file.path.linux}")
     String linuxPath ;
 
 
@@ -46,7 +53,7 @@ public class FunctionService {
     }
 
 
-    public Consumption commonReceipt(String fileName){
+    public Consumption commonReceipt(String fileName) throws ParseException {
         String filePath = judgeEnvPath();
         // 商铺小票识别
         String url = "https://api.textin.com/robot/v1.0/api/receipt";
@@ -116,11 +123,15 @@ public class FunctionService {
                 consumption.setStore(json.getString("value"));
             }
             if(json.getString("key").equals("sku")){
-                consumption.setDescription(json.getString("value"));
+                consumption.setConsumptionName(json.getString("value"));
+            }
+            if(json.getString("key").equals("date")){
+                consumption.setConsumeTime(sdf.parse(json.getString("value")));
             }
         }
 
-        consumption.setTypeId(0);
+        consumption.setTypeId(9);
+        consumption.setCredential(fileName);
 
         return consumption;
 

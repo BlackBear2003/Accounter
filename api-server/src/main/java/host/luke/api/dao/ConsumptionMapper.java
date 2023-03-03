@@ -15,6 +15,10 @@ public interface ConsumptionMapper extends BaseMapper<Consumption> {
     public Long findConsOwner(Long consumptionId);
 
     public Double getBalanceOfAll(Long userId);
-
     public Double getBalanceOfDateTime(@Param("userId") Long userId, @Param("startDate") Date startDate, @Param("endDate") Date endDate);
+
+    public Double getOutPaidOfAll(Long userId);
+    public Double getInEarnedOfAll(Long userId);
+    public Double getOutPaidOfDateTime(@Param("userId") Long userId, @Param("startDate") Date startDate, @Param("endDate") Date endDate);
+    public Double getInEarnedOfDateTime(@Param("userId") Long userId, @Param("startDate") Date startDate, @Param("endDate") Date endDate);
 }

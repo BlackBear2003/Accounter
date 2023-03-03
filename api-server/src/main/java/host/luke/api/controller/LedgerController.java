@@ -11,9 +11,13 @@ import host.luke.common.utils.ResponseResult;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -33,25 +37,30 @@ public class LedgerController {
 
 
 
-    @PostMapping("/")
+    @PostMapping("")
     @Transactional
     @IDCheck
-    public ResponseResult addNewLedger(HttpServletRequest request,Ledger ledger){
+    public ResponseResult addNewLedger(HttpServletRequest request,@RequestBody Ledger ledger){
 
         Long userId = Long.valueOf(request.getHeader("userId"));
 
-        if(ledger.getUserId()==userId){
+        if(ledger.getUserId()!=userId){
             return new ResponseResult(403,"权限不足");
         }
 
         ledger.setUpdateTime(new Date());
-        if(ledgerService.save(ledger)){
-            return ResponseResult.success();
+        if(ledgerMapper.insert(ledger)==1){
+            //包装
+            Map<String,Object> map = new HashMap<>();
+            map.put("ledger",ledger);
+            return new ResponseResult(200,"success",map);
         }
+
+
         return new ResponseResult(405,"failed");
     }
 
-    @GetMapping("/")
+    @GetMapping("")
     @IDCheck
     public ResponseResult getUsersLedger(HttpServletRequest request){
 
@@ -68,12 +77,12 @@ public class LedgerController {
 
     }
 
-    @DeleteMapping("/")
+    @DeleteMapping("")
     @IDCheck
-    public ResponseResult removeLedger(HttpServletRequest request,Ledger ledger){
+    public ResponseResult removeLedger(HttpServletRequest request,@RequestBody Ledger ledger){
         Long userId = Long.valueOf(request.getHeader("userId"));
 
-        if(ledger.getUserId()==userId){
+        if(ledger.getUserId()!=userId){
             return new ResponseResult(403,"权限不足");
         }
 
@@ -84,19 +93,23 @@ public class LedgerController {
         return new ResponseResult(405,"failed");
     }
 
-    @PutMapping("/")
+    @PutMapping("")
     @IDCheck
-    public ResponseResult updateLedger(HttpServletRequest request,Ledger ledger){
+    public ResponseResult updateLedger(HttpServletRequest request,@RequestBody Ledger ledger){
 
         Long userId = Long.valueOf(request.getHeader("userId"));
 
-        if(ledger.getUserId()==userId){
-            return new ResponseResult(403,"权限不足");
+        if(ledger.getUserId()!=userId){
+            return ResponseResult.error();
         }
 
         ledger.setUpdateTime(new Date());
         if(ledgerService.updateById(ledger)){
-            return ResponseResult.success();
+            //包装
+            Map<String,Object> map = new HashMap<>();
+            map.put("ledger",ledger);
+            return new ResponseResult(200,"success",map);
+
         }
         return new ResponseResult(405,"failed");
     }
@@ -158,6 +171,14 @@ public class LedgerController {
         return new ResponseResult(200,"success",map);
 
     }
+
+    @InitBinder
+    public void initBinder(WebDataBinder binder) {
+        //转换日期
+        DateFormat dateFormat =new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        binder.registerCustomEditor(Date.class, new CustomDateEditor(dateFormat , true));
+    }
+
 
 
 }

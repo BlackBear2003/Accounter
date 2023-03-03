@@ -28,7 +28,7 @@ public class GuardianshipServiceImpl extends ServiceImpl<GuardianshipMapper, Gua
     }
 
     public Long getUserIdByCode(String code){
-        Long wardUserId = (Long) redisTemplate.opsForValue().get(code);
+        Long wardUserId = Long.valueOf((String) redisTemplate.opsForValue().get(code));
         return wardUserId;
     }
 

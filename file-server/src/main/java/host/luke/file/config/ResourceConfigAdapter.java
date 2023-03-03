@@ -7,11 +7,12 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class ResourceConfigAdapter implements WebMvcConfigurer {
 
-    @Value("${file.win.path}")
+
+    @Value("${file.path.win}")
     String winPath ;
-    @Value("${file.mac.path}")
+    @Value("${file.path.mac}")
     String macPath ;
-    @Value("${file.linux.path}")
+    @Value("${file.path.linux}")
     String linuxPath ;
 
 

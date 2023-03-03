@@ -48,7 +48,7 @@ public class ConsumptionServiceImpl extends ServiceImpl<ConsumptionMapper, Consu
 
     @Override
     @Transactional
-    public Boolean addNewCons(Long userId, Consumption consumption){
+    public Consumption addNewCons(Long userId, Consumption consumption){
 
         SnowFlake snowFlake = new SnowFlake(0,0);
         consumption.setConsumptionId(snowFlake.nextId());
@@ -56,7 +56,7 @@ public class ConsumptionServiceImpl extends ServiceImpl<ConsumptionMapper, Consu
         int add = consumptionMapper.addCons(userId,consumption.getConsumptionId());
 
         if(ins>0&&add>0){
-            return true;
+            return consumption;
         }
         else{
             throw new RuntimeException("插入失败");

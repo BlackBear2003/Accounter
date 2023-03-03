@@ -22,8 +22,10 @@ spring:
       minimum-idle: 1
 
 file:
-  path: E:\MyProject\Accounter-file\
-
+  path:
+    win: E:\MyProject\Accounter-file\
+    mac: /Library/MyProjects/Accounter-file/
+    linux: /tmp/file/
 eureka:
   client:
     service-url:

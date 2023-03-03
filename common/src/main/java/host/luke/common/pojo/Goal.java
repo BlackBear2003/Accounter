@@ -8,15 +8,19 @@ import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
-@TableName("t_guardianship")
+
 @Data
-public class Guardianship {
+@TableName("t_goal")
+public class Goal {
     @TableId(type = IdType.AUTO)
-    Integer guardianshipId;
-    Long wardId;
-    Long guardianId;
-    String relationship;
+    private Integer goalId;
+    private String goalName;
+    private Long userId;
+    private Double money;
     @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
-    Date bindDate;
+    private Date createDate;
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    private Date deadline;
 }

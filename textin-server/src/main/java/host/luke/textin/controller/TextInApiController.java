@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -136,6 +137,8 @@ public class TextInApiController {
         }catch (RuntimeException e){
             e.printStackTrace();
             return ResponseResult.error();
+        } catch (ParseException e) {
+            e.printStackTrace();
         }
         Map res = new HashMap();
         res.put("consumption",consumption);

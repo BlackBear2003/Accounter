@@ -31,4 +31,31 @@
           and ( consumption_id in (select consumption_id from t_user_consumption where user_id = #{userId} ));
     </select>
 
+    <select id="getOutPaidOfAll" parameterType="Long" resultType="Double">
+        select sum(amount)
+        from t_consumption
+        where 0 > amount AND consumption_id in (select consumption_id from t_user_consumption where user_id = #{userId} );
+    </select>
+
+    <select id="getOutPaidOfDateTime" resultType="Double">
+        select sum(amount)
+        from t_consumption
+        where 0 > amount AND (consume_time between #{startDate} and #{endDate})
+          and ( consumption_id in (select consumption_id from t_user_consumption where user_id = #{userId} ));
+    </select>
+
+    <select id="getInEarnedOfAll" parameterType="Long" resultType="Double">
+        select sum(amount)
+        from t_consumption
+        where amount > 0 AND consumption_id in (select consumption_id from t_user_consumption where user_id = #{userId} );
+    </select>
+
+    <select id="getInEarnedOfDateTime" resultType="Double">
+        select sum(amount)
+        from t_consumption
+        where amount > 0 AND (consume_time between #{startDate} and #{endDate})
+          and ( consumption_id in (select consumption_id from t_user_consumption where user_id = #{userId} ));
+    </select>
+
+
 </mapper>

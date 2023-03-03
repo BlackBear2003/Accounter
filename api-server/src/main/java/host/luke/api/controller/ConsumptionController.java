@@ -68,16 +68,14 @@ public class ConsumptionController {
 
         Long userId = Long.valueOf(request.getHeader("userId"));
 
-        if(consumptionService.addNewCons(userId, consumption)){
-            return new ResponseResult(200,"success");
-        }
-        else{
-            return ResponseResult.error();
-        }
+
+        Consumption insertedCons =  consumptionService.addNewCons(userId,consumption);
+        Map<String,Object> map = new HashMap<>();
+        map.put("consumption",insertedCons);
+
+        return new ResponseResult(200,"success",map);
+
     }
-
-
-    //TODO: 获取近*天的消费记录
 
 
 
@@ -133,6 +131,20 @@ public class ConsumptionController {
         return new ResponseResult(200,"success",map);
     }
 
+    @GetMapping("/consumption/out/sum")
+    @IDCheck
+    public ResponseResult getOutPaidSum(HttpServletRequest request){
+
+        Long userId = Long.valueOf(request.getHeader("userId"));
+
+
+
+        Map<String,Object> map = new HashMap<>();
+        map.put("sum",consumptionMapper.getOutPaidOfAll(userId));
+
+        return new ResponseResult(200,"success",map);
+    }
+
     @GetMapping("/consumption/in")
     @IDCheck
     public ResponseResult getInEarnedCons(HttpServletRequest request){
@@ -151,6 +163,85 @@ public class ConsumptionController {
         return new ResponseResult(200,"success",map);
     }
 
+    @GetMapping("/consumption/in/sum")
+    @IDCheck
+    public ResponseResult getInEarnedSum(HttpServletRequest request){
+
+        Long userId = Long.valueOf(request.getHeader("userId"));
+
+
+
+        Map<String,Object> map = new HashMap<>();
+        map.put("sum",consumptionMapper.getInEarnedOfAll(userId));
+
+        return new ResponseResult(200,"success",map);
+    }
+
+    @GetMapping("/consumption/out/month")
+    @IDCheck
+    public ResponseResult getOutPaidConsOfMonth(HttpServletRequest request,Date date){
+
+        Long userId = Long.valueOf(request.getHeader("userId"));
+
+        QueryWrapper wrapper = new QueryWrapper();
+        //小于0的
+        wrapper.lt("amount",0);
+        wrapper.between("consume_time", DateUtil.getMonthStartTime(date),DateUtil.getMonthEndTime(date));
+        wrapper.inSql("consumption_id","select consumption_id from t_user_consumption where user_id = "+userId);
+        List list = consumptionService.list(wrapper);
+
+        Map<String,Object> map = new HashMap<>();
+        map.put("list",list);
+
+        return new ResponseResult(200,"success",map);
+    }
+
+    @GetMapping("/consumption/out/month/sum")
+    @IDCheck
+    public ResponseResult getOutPaidSumOfAMonth(HttpServletRequest request,Date date){
+
+        Long userId = Long.valueOf(request.getHeader("userId"));
+
+
+
+        Map<String,Object> map = new HashMap<>();
+        map.put("sum",consumptionMapper.getOutPaidOfDateTime(userId, DateUtil.getMonthStartTime(date),DateUtil.getMonthEndTime(date)));
+
+        return new ResponseResult(200,"success",map);
+    }
+
+    @GetMapping("/consumption/in/month")
+    @IDCheck
+    public ResponseResult getInEarnedConsOfMonth(HttpServletRequest request,Date date){
+
+        Long userId = Long.valueOf(request.getHeader("userId"));
+
+        QueryWrapper wrapper = new QueryWrapper();
+        //大于0
+        wrapper.gt("amount",0);
+        wrapper.between("consume_time", DateUtil.getMonthStartTime(date),DateUtil.getMonthEndTime(date));
+        wrapper.inSql("consumption_id","select consumption_id from t_user_consumption where user_id = "+userId);
+        List list = consumptionService.list(wrapper);
+
+        Map<String,Object> map = new HashMap<>();
+        map.put("list",list);
+
+        return new ResponseResult(200,"success",map);
+    }
+
+    @GetMapping("/consumption/in/month/sum")
+    @IDCheck
+    public ResponseResult getInEarnedSumOfAMonth(HttpServletRequest request,Date date){
+
+        Long userId = Long.valueOf(request.getHeader("userId"));
+
+
+
+        Map<String,Object> map = new HashMap<>();
+        map.put("sum",consumptionMapper.getInEarnedOfDateTime(userId, DateUtil.getMonthStartTime(date),DateUtil.getMonthEndTime(date)));
+
+        return new ResponseResult(200,"success",map);
+    }
 
 
     @GetMapping("/consumption/amount")
@@ -220,6 +311,21 @@ public class ConsumptionController {
         Long userId = Long.valueOf(request.getHeader("userId"));
 
         List list = consumptionService.getLastYearCons(userId,date);
+
+        Map<String,Object> map = new HashMap<>();
+        map.put("list",list);
+
+        return new ResponseResult(200,"success",map);
+
+    }
+
+    @GetMapping("/consumption/last/month")
+    @IDCheck
+    public ResponseResult getLastMonthCons(HttpServletRequest request,Date date){
+
+        Long userId = Long.valueOf(request.getHeader("userId"));
+
+        List list = consumptionService.getLastMonthCons(userId,date);
 
         Map<String,Object> map = new HashMap<>();
         map.put("list",list);

@@ -9,9 +9,13 @@ import host.luke.common.pojo.Ledger;
 import host.luke.common.utils.ResponseResult;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -25,7 +29,7 @@ public class BudgetController {
     @Resource
     BudgetMapper budgetMapper;
 
-    @GetMapping("/")
+    @GetMapping("")
     @IDCheck
     public ResponseResult getUserAllBudget(HttpServletRequest request){
         Long userId = Long.valueOf(request.getHeader("userId"));
@@ -39,24 +43,27 @@ public class BudgetController {
         return new ResponseResult(200,"success",map);
     }
 
-    @PostMapping("/")
+    @PostMapping("")
     @Transactional
     @IDCheck
-    public ResponseResult addNewBudget(HttpServletRequest request,Budget budget){
+    public ResponseResult addNewBudget(HttpServletRequest request,@RequestBody Budget budget){
         Long userId = Long.valueOf(request.getHeader("userId"));
 
-        if(budgetService.save(budget)){
+        if(budgetMapper.insert(budget)==1){
             if(budgetMapper.addBudgetForUser(budget.getBudgetId(),userId)==1){
-                return ResponseResult.success();
+                //包装
+                Map<String,Object> map = new HashMap<>();
+                map.put("budget",budget);
+                return new ResponseResult(200,"success",map);
             }
         }
         return new ResponseResult(405,"failed");
     }
 
-    @DeleteMapping("/")
+    @DeleteMapping("")
     @IDCheck
     @Transactional
-    public ResponseResult removeBudget(HttpServletRequest request,Budget budget){
+    public ResponseResult removeBudget(HttpServletRequest request,@RequestBody Budget budget){
         Long userId = Long.valueOf(request.getHeader("userId"));
 
         if(budgetService.removeById(budget)){
@@ -67,20 +74,23 @@ public class BudgetController {
         return new ResponseResult(405,"failed");
     }
 
-    @PutMapping("/")
+    @PutMapping("")
     @IDCheck
-    public ResponseResult updateBudget(Budget budget){
+    public ResponseResult updateBudget(@RequestBody Budget budget){
 
         if(budgetService.updateById(budget)){
-            return ResponseResult.success();
+            //包装
+            Map<String,Object> map = new HashMap<>();
+            map.put("budget",budget);
+            return new ResponseResult(200,"success",map);
         }
         return new ResponseResult(405,"failed");
 
     }
 
-    @GetMapping("/sum/month")
+    @GetMapping("/sum")
     @IDCheck
-    public ResponseResult getThisMonthBudget(HttpServletRequest request,Date date){
+    public ResponseResult getThisMonthBudget(HttpServletRequest request){
 
         Long userId = Long.valueOf(request.getHeader("userId"));
 
@@ -101,6 +111,13 @@ public class BudgetController {
 
         return new ResponseResult(200,"success",map);
 
+    }
+
+    @InitBinder
+    public void initBinder(WebDataBinder binder) {
+        //转换日期
+        DateFormat dateFormat =new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        binder.registerCustomEditor(Date.class, new CustomDateEditor(dateFormat , true));
     }
 
 

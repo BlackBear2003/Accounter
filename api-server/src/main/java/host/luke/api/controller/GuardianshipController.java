@@ -41,6 +41,7 @@ public class GuardianshipController {
         if(wardUserId!=0){
             Guardianship guardianship = new Guardianship();
             guardianship.setGuardianId(guardianUserId);
+            guardianship.setWardId(wardUserId);
             guardianshipService.save(guardianship);
             Map res = new HashMap();
             res.put("guardianship",guardianship);
@@ -51,7 +52,7 @@ public class GuardianshipController {
 
     @PutMapping("")
     @IDCheck
-    public ResponseResult update(HttpServletRequest request,Guardianship guardianship){
+    public ResponseResult update(HttpServletRequest request,@RequestBody Guardianship guardianship){
 
         Long userId = Long.valueOf(request.getHeader("userId"));
 
@@ -69,7 +70,7 @@ public class GuardianshipController {
 
     @DeleteMapping("")
     @IDCheck
-    public ResponseResult deleteBind(HttpServletRequest request,Guardianship guardianship){
+    public ResponseResult deleteBind(HttpServletRequest request,@RequestBody Guardianship guardianship){
 
         Long userId = Long.valueOf(request.getHeader("userId"));
 
@@ -116,9 +117,10 @@ public class GuardianshipController {
         }
 
         Page<Consumption> page = new Page<>(current,size);
-        QueryWrapper wrapper = new QueryWrapper();
+        QueryWrapper<Consumption> wrapper = new QueryWrapper<Consumption>();
         //select by ward!!!
         wrapper.inSql("consumption_id","select consumption_id from t_user_consumption where user_id = "+wardId);
+        wrapper.orderByDesc("consume_time");
         IPage<Consumption> iPage = consumptionMapper.selectPage(page ,wrapper);
         List<Consumption> list = iPage.getRecords();
 
@@ -130,5 +132,25 @@ public class GuardianshipController {
 
         return new ResponseResult(200,"success",map);
     }
+
+    @GetMapping("/code")
+    @IDCheck
+    public ResponseResult getWardCode(HttpServletRequest request){
+        Long userId = Long.valueOf(request.getHeader("userId"));
+
+        String code = guardianshipService.generateRandomCodeForWard(userId);
+
+        Map res = new HashMap();
+        res.put("code",code);
+        return new ResponseResult(200,"success",res);
+    }
+
+    @InitBinder
+    public void initBinder(WebDataBinder binder) {
+        //转换日期
+        DateFormat dateFormat =new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        binder.registerCustomEditor(Date.class, new CustomDateEditor(dateFormat , true));
+    }
+
 
 }

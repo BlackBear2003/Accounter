@@ -19,7 +19,7 @@ public interface ConsumptionService extends IService<Consumption> {
     Double getBalanceOfDateTime(Long userId, Date startDate, Date endDate);
 
     @Transactional
-    Boolean addNewCons(Long userId, Consumption consumption);
+    Consumption addNewCons(Long userId, Consumption consumption);
 
     List getConsByAmount(Long userId, double low, double high);
 

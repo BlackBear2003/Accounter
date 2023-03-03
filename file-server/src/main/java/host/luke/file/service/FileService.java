@@ -14,11 +14,11 @@ import java.util.UUID;
 @Component
 public class FileService {
 
-    @Value("${file.win.path}")
+    @Value("${file.path.win}")
     String winPath ;
-    @Value("${file.mac.path}")
+    @Value("${file.path.mac}")
     String macPath ;
-    @Value("${file.linux.path}")
+    @Value("${file.path.linux}")
     String linuxPath ;
 
 

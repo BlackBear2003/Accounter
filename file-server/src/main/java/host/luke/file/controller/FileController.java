@@ -8,7 +8,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 public class FileController {
@@ -21,7 +23,10 @@ public class FileController {
 
         List list = fileService.upload(multipartFiles);
 
-        return new ResponseResult(200,"success",list);
+        Map map = new HashMap();
+        map.put("list",list);
+
+        return new ResponseResult(200,"success",map);
 
     }
 

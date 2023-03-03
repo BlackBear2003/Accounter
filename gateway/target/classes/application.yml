@@ -49,6 +49,15 @@ spring:
         predicates:
           - Path=/api/**
 
+      - id: TEXTIN-SERVER
+        uri: lb://TEXTIN-SERVER
+        predicates:
+          - Path=/ti/**
+
+      - id: FILE-SERVER
+        uri: lb://FILE-SERVER
+        predicates:
+          - Path=/file/** , /images/**
 
       discovery:
         locator:
