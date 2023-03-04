@@ -5,3 +5,4 @@
 /eureka-server/target/
 /gateway/target/
 /api-server/target/
+/build/**.0.jar
