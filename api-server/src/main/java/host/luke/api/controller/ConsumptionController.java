@@ -1,6 +1,8 @@
 package host.luke.api.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import host.luke.api.aop.IDCheck;
 import host.luke.api.dao.ConsumptionMapper;
 import host.luke.api.service.impl.ConsumptionServiceImpl;
@@ -39,6 +41,27 @@ public class ConsumptionController {
         //包装
         Map<String,Object> map = new HashMap<>();
         map.put("list",list);
+
+        return new ResponseResult(200,"success",map);
+    }
+
+    @GetMapping("/consumption/page")
+    @IDCheck
+    public ResponseResult pageAllConsByUserId(HttpServletRequest request,Integer current,Integer size){
+
+        Long userId = Long.valueOf(request.getHeader("userId"));
+
+        Page<Consumption> page = new Page<>(current,size);
+        QueryWrapper<Consumption> queryWrapper = new QueryWrapper<>();
+        queryWrapper.inSql("consumption_id","select consumption_id from t_user_consumption where user_id = "+userId);
+        queryWrapper.orderByDesc("consume_time");
+        IPage<Consumption> iPage = consumptionService.page(page,queryWrapper);
+
+        //包装
+        Map<String,Object> map = new HashMap<>();
+        map.put("list",iPage.getRecords());
+        map.put("pages",iPage.getPages());
+        map.put("total",iPage.getTotal());
 
         return new ResponseResult(200,"success",map);
     }
@@ -123,6 +146,7 @@ public class ConsumptionController {
         //小于0的
         wrapper.lt("amount",0);
         wrapper.inSql("consumption_id","select consumption_id from t_user_consumption where user_id = "+userId);
+        wrapper.orderByDesc("consume_time");
         List list = consumptionService.list(wrapper);
 
         Map<String,Object> map = new HashMap<>();
@@ -155,6 +179,7 @@ public class ConsumptionController {
         //大于0
         wrapper.gt("amount",0);
         wrapper.inSql("consumption_id","select consumption_id from t_user_consumption where user_id = "+userId);
+        wrapper.orderByDesc("consume_time");
         List list = consumptionService.list(wrapper);
 
         Map<String,Object> map = new HashMap<>();
@@ -188,6 +213,7 @@ public class ConsumptionController {
         wrapper.lt("amount",0);
         wrapper.between("consume_time", DateUtil.getMonthStartTime(date),DateUtil.getMonthEndTime(date));
         wrapper.inSql("consumption_id","select consumption_id from t_user_consumption where user_id = "+userId);
+        wrapper.orderByDesc("consume_time");
         List list = consumptionService.list(wrapper);
 
         Map<String,Object> map = new HashMap<>();
@@ -221,6 +247,7 @@ public class ConsumptionController {
         wrapper.gt("amount",0);
         wrapper.between("consume_time", DateUtil.getMonthStartTime(date),DateUtil.getMonthEndTime(date));
         wrapper.inSql("consumption_id","select consumption_id from t_user_consumption where user_id = "+userId);
+        wrapper.orderByDesc("consume_time");
         List list = consumptionService.list(wrapper);
 
         Map<String,Object> map = new HashMap<>();
@@ -348,6 +375,35 @@ public class ConsumptionController {
 
         return new ResponseResult(200,"success",map);
     }
+
+    @GetMapping("/consumption/day/out")
+    @IDCheck
+    public ResponseResult getCurDayOutSum(HttpServletRequest request, Date date){
+
+        Long userId = Long.valueOf(request.getHeader("userId"));
+
+        Double sum = consumptionMapper.getOutPaidOfDateTime(userId,DateUtil.getDayStartTime(date),DateUtil.getDayEndTime(date));
+
+        Map<String,Object> map = new HashMap<>();
+        map.put("sum",sum);
+
+        return new ResponseResult(200,"success",map);
+    }
+
+    @GetMapping("/consumption/day/in")
+    @IDCheck
+    public ResponseResult getCurDayInSum(HttpServletRequest request, Date date){
+
+        Long userId = Long.valueOf(request.getHeader("userId"));
+
+        Double sum = consumptionMapper.getInEarnedOfDateTime(userId,DateUtil.getDayStartTime(date),DateUtil.getDayEndTime(date));
+
+        Map<String,Object> map = new HashMap<>();
+        map.put("sum",sum);
+
+        return new ResponseResult(200,"success",map);
+    }
+
 
     @GetMapping("/consumption/week")
     @IDCheck
