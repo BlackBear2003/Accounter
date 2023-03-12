@@ -22,8 +22,12 @@ public class ConsumptionServiceImpl extends ServiceImpl<ConsumptionMapper, Consu
 
     @Override
     public List getAllConsByUserId(Long userId){
+        QueryWrapper wrapper = new QueryWrapper();
 
-        return consumptionMapper.getConsByUserId(userId);
+        wrapper.inSql("consumption_id","select consumption_id from t_user_consumption where user_id = "+userId);
+        wrapper.orderByDesc("consume_time");
+
+        return consumptionMapper.selectList(wrapper);
     }
 
 
@@ -69,6 +73,7 @@ public class ConsumptionServiceImpl extends ServiceImpl<ConsumptionMapper, Consu
         QueryWrapper wrapper = new QueryWrapper();
         wrapper.between("amount",low,high);
         wrapper.inSql("consumption_id","select consumption_id from t_user_consumption where user_id = "+userId);
+        wrapper.orderByDesc("consume_time");
 
         return (List<Consumption>) consumptionMapper.selectList(wrapper);
     }
@@ -83,6 +88,7 @@ public class ConsumptionServiceImpl extends ServiceImpl<ConsumptionMapper, Consu
         QueryWrapper wrapper = new QueryWrapper();
         wrapper.between("consume_time", DateUtil.getYearStartTime(date),DateUtil.getYearEndTime(date));
         wrapper.inSql("consumption_id","select consumption_id from t_user_consumption where user_id = "+userId);
+        wrapper.orderByDesc("consume_time");
 
         return consumptionMapper.selectList(wrapper);
     }
@@ -94,6 +100,7 @@ public class ConsumptionServiceImpl extends ServiceImpl<ConsumptionMapper, Consu
         QueryWrapper wrapper = new QueryWrapper();
         wrapper.between("consume_time", DateUtil.getMonthStartTime(date),DateUtil.getMonthEndTime(date));
         wrapper.inSql("consumption_id","select consumption_id from t_user_consumption where user_id = "+userId);
+        wrapper.orderByDesc("consume_time");
 
 
         return consumptionMapper.selectList(wrapper);
@@ -105,6 +112,7 @@ public class ConsumptionServiceImpl extends ServiceImpl<ConsumptionMapper, Consu
         QueryWrapper wrapper = new QueryWrapper();
         wrapper.between("consume_time", DateUtil.getLastAMonthTime(date),date);
         wrapper.inSql("consumption_id","select consumption_id from t_user_consumption where user_id = "+userId);
+        wrapper.orderByDesc("consume_time");
 
 
         return consumptionMapper.selectList(wrapper);
@@ -115,6 +123,7 @@ public class ConsumptionServiceImpl extends ServiceImpl<ConsumptionMapper, Consu
         QueryWrapper wrapper = new QueryWrapper();
         wrapper.between("consume_time", DateUtil.getLastAWeekTime(date),date);
         wrapper.inSql("consumption_id","select consumption_id from t_user_consumption where user_id = "+userId);
+        wrapper.orderByDesc("consume_time");
 
 
         return consumptionMapper.selectList(wrapper);
@@ -125,6 +134,7 @@ public class ConsumptionServiceImpl extends ServiceImpl<ConsumptionMapper, Consu
         QueryWrapper wrapper = new QueryWrapper();
         wrapper.between("consume_time", DateUtil.getLastAYearTime(date),date);
         wrapper.inSql("consumption_id","select consumption_id from t_user_consumption where user_id = "+userId);
+        wrapper.orderByDesc("consume_time");
 
 
         return consumptionMapper.selectList(wrapper);
@@ -136,7 +146,7 @@ public class ConsumptionServiceImpl extends ServiceImpl<ConsumptionMapper, Consu
         QueryWrapper wrapper = new QueryWrapper();
         wrapper.between("consume_time",DateUtil.getDayStartTime(date),DateUtil.getDayEndTime(date));
         wrapper.inSql("consumption_id","select consumption_id from t_user_consumption where user_id = "+userId);
-
+        wrapper.orderByDesc("consume_time");
         return consumptionMapper.selectList(wrapper);
     }
 
@@ -146,7 +156,7 @@ public class ConsumptionServiceImpl extends ServiceImpl<ConsumptionMapper, Consu
         QueryWrapper wrapper = new QueryWrapper();
         wrapper.between("consume_time",DateUtil.getWeekStartTime(date),DateUtil.getWeekEndTime(date));
         wrapper.inSql("consumption_id","select consumption_id from t_user_consumption where user_id = "+userId);
-
+        wrapper.orderByDesc("consume_time");
         return consumptionMapper.selectList(wrapper);
     }
 
@@ -156,7 +166,7 @@ public class ConsumptionServiceImpl extends ServiceImpl<ConsumptionMapper, Consu
         QueryWrapper wrapper = new QueryWrapper();
         wrapper.between("consume_time",DateUtil.getQuarterStartTime(date),DateUtil.getQuarterEndTime(date));
         wrapper.inSql("consumption_id","select consumption_id from t_user_consumption where user_id = "+userId);
-
+        wrapper.orderByDesc("consume_time");
         return consumptionMapper.selectList(wrapper);
     }
 }
