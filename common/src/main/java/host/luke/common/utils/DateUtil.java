@@ -9,9 +9,9 @@ import java.util.List;
 
 public class DateUtil {
 
-    private final static SimpleDateFormat shortSdf = new SimpleDateFormat("yyyy-MM-dd");
+    public final static SimpleDateFormat shortSdf = new SimpleDateFormat("yyyy-MM-dd");
     private final static SimpleDateFormat longHourSdf = new SimpleDateFormat("yyyy-MM-dd HH");
-    private final static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    public final static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     private final static SimpleDateFormat longSdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
 
 
@@ -21,14 +21,14 @@ public class DateUtil {
         Calendar c = Calendar.getInstance();
         c.setTime(date);
         //c.add(java.util.Calendar.DATE, -7); // 向前一周；如果需要向后一周，用正数即可
-        c.add(Calendar.MONTH, -1); // 向前一月；如果需要向后一月，用正数即可
+        c.add(Calendar.DATE, -29); // 向前一月；如果需要向后一月，用正数即可
         return c.getTime();
     }
 
     public static Date getLastAWeekTime(Date date){
         Calendar c = Calendar.getInstance();
         c.setTime(date);
-        c.add(java.util.Calendar.DATE, -7); // 向前一周；如果需要向后一周，用正数即可
+        c.add(java.util.Calendar.DATE, -6); // 向前一周；如果需要向后一周，用正数即可
         //c.add(Calendar.MONTH, -1); // 向前一月；如果需要向后一月，用正数即可
         return c.getTime();
     }

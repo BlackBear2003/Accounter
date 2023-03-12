@@ -1,5 +1,6 @@
 package host.luke.api.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import host.luke.api.aop.IDCheck;
 import host.luke.api.dao.ConsumptionMapper;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -61,6 +63,7 @@ public class ConsumptionController {
         return new ResponseResult(200,"success",map);
     }
 
+
     @PostMapping("/consumption")
     @Transactional
     @IDCheck
@@ -105,6 +108,34 @@ public class ConsumptionController {
         Long userId = Long.valueOf(request.getHeader("userId"));
         
         Double balance = consumptionService.getBalanceOfDateTime(userId,DateUtil.getDayStartTime(date),DateUtil.getDayEndTime(date));
+
+        Map<String,Object> map = new HashMap<>();
+        map.put("balance",balance);
+
+        return new ResponseResult(200,"success",map);
+    }
+
+    @GetMapping("/consumption/balance/month")
+    @IDCheck
+    public ResponseResult getBalanceOfMonth(HttpServletRequest request,Date date ){
+
+        Long userId = Long.valueOf(request.getHeader("userId"));
+
+        Double balance = consumptionService.getBalanceOfDateTime(userId,DateUtil.getMonthStartTime(date),DateUtil.getMonthEndTime(date));
+
+        Map<String,Object> map = new HashMap<>();
+        map.put("balance",balance);
+
+        return new ResponseResult(200,"success",map);
+    }
+
+    @GetMapping("/consumption/balance/year")
+    @IDCheck
+    public ResponseResult getBalanceOfYear(HttpServletRequest request,Date date){
+
+        Long userId = Long.valueOf(request.getHeader("userId"));
+
+        Double balance = consumptionService.getBalanceOfDateTime(userId,DateUtil.getYearStartTime(date),DateUtil.getYearEndTime(date));
 
         Map<String,Object> map = new HashMap<>();
         map.put("balance",balance);
@@ -290,6 +321,50 @@ public class ConsumptionController {
         return new ResponseResult(200,"success",map);
     }
 
+    /**
+     * 获取当月的消费记录，并且以 date-list 形式逆序输出
+     * @param request
+     * @param date
+     * @return
+     * @throws ParseException
+     */
+    @GetMapping("/consumption/month/map")
+    @IDCheck
+    public ResponseResult getCurMonthConsParseToMap(HttpServletRequest request, Date date){
+
+        Long userId = Long.valueOf(request.getHeader("userId"));
+
+        List<Consumption> list = consumptionService.getCurMonthCons(userId,date);
+
+        Date cur = null;
+
+        Map<String,ArrayList> map = new TreeMap<>(Collections.reverseOrder());
+
+        for (Consumption cons:
+             list) {
+            if(Objects.isNull(cur)){
+                cur = cons.getConsumeTime();
+                //start a new day
+                map.put(DateUtil.shortSdf.format(cons.getConsumeTime()),new ArrayList<Consumption>());
+            }
+
+            if(DateUtil.getYearDayIndex(cons.getConsumeTime())==DateUtil.getYearDayIndex(cur)){
+                //is the same day
+                map.get(DateUtil.shortSdf.format(cons.getConsumeTime())).add(cons);
+            }else{
+                //start a new day
+                map.put(DateUtil.shortSdf.format(cons.getConsumeTime()),new ArrayList<Consumption>());
+                cur = cons.getConsumeTime();
+                map.get(DateUtil.shortSdf.format(cons.getConsumeTime())).add(cons);
+
+            }
+        }
+
+
+        return new ResponseResult(200,"success",map);
+    }
+
+
     @GetMapping("/consumption/last/week")
     @IDCheck
     public ResponseResult getLastWeekCons(HttpServletRequest request,Date date){
@@ -304,6 +379,57 @@ public class ConsumptionController {
         return new ResponseResult(200,"success",map);
 
     }
+
+    @GetMapping("/consumption/last/week/analysis")
+    @IDCheck
+    public ResponseResult getLastWeekConsData(HttpServletRequest request,Date date){
+
+        Long userId = Long.valueOf(request.getHeader("userId"));
+
+        int base = DateUtil.getYearDayIndex(date);
+
+        List<Consumption> list = consumptionService.getLastWeekCons(userId,date);
+        double[] money = new double[7];
+
+        for (Consumption c:
+             list) {
+            int day = DateUtil.getYearDayIndex(c.getConsumeTime());
+            //System.out.println("day:"+day+" base:"+base);
+            int index = 6-(base-day);
+            money[index] += c.getAmount();
+        }
+        Map<String,Object> map = new HashMap<>();
+        map.put("money",money);
+
+        return new ResponseResult(200,"success",map);
+    }
+
+    @GetMapping("/consumption/last/month/analysis")
+    @IDCheck
+    public ResponseResult getLastMonthConsData(HttpServletRequest request,Date date){
+
+        Long userId = Long.valueOf(request.getHeader("userId"));
+
+        int base = DateUtil.getYearDayIndex(date);
+
+        List<Consumption> list = consumptionService.getLastMonthCons(userId,date);
+        double[] money = new double[30];
+
+        for (Consumption c:
+                list) {
+            int day = DateUtil.getYearDayIndex(c.getConsumeTime());
+            //System.out.println("day:"+day+" base:"+base);
+            int index = 29-(base-day);
+            money[index] += c.getAmount();
+        }
+
+        Map<String,Object> map = new HashMap<>();
+        map.put("money",money);
+
+        return new ResponseResult(200,"success",map);
+    }
+
+
     @GetMapping("/consumption/last/year")
     @IDCheck
     public ResponseResult getLastYearCons(HttpServletRequest request,Date date){
