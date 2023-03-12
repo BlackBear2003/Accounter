@@ -69,6 +69,7 @@ public class TypeServiceImpl extends ServiceImpl<TypeMapper, Type> implements Ty
             QueryWrapper wrapper = new QueryWrapper();
             wrapper.inSql("consumption_id","select consumption_id from t_user_consumption where user_id = "+userId);
             wrapper.in("type_id",idList);
+            wrapper.orderByDesc("consume_time");
 
             return consumptionMapper.selectList(wrapper);
         }
@@ -76,6 +77,7 @@ public class TypeServiceImpl extends ServiceImpl<TypeMapper, Type> implements Ty
             QueryWrapper wrapper = new QueryWrapper();
             wrapper.inSql("consumption_id","select consumption_id from t_user_consumption where user_id = "+userId);
             wrapper.eq("type_id",type.getTypeId());
+            wrapper.orderByDesc("consume_time");
 
             return consumptionMapper.selectList(wrapper);
         }
