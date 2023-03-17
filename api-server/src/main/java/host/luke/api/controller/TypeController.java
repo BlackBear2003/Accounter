@@ -1,6 +1,7 @@
 package host.luke.api.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import host.luke.api.aop.ApiLog;
 import host.luke.api.aop.IDCheck;
 import host.luke.api.service.impl.ConsumptionServiceImpl;
 import host.luke.api.service.impl.TypeServiceImpl;
@@ -28,6 +29,7 @@ public class TypeController {
 
     @GetMapping("/consumption/type")
     @IDCheck
+    @ApiLog
     public ResponseResult getConsByType(HttpServletRequest request, String typeName){
 
         Long userId = Long.valueOf(request.getHeader("userId"));
@@ -41,6 +43,7 @@ public class TypeController {
     }
 
     @GetMapping("/type")
+    @ApiLog
     public ResponseResult getLevelOneTypes(){
 
         List list = typeService.getLevelOneTypes();
@@ -52,6 +55,7 @@ public class TypeController {
     }
 
     @GetMapping("/type/son")
+    @ApiLog
     public ResponseResult getLevelTwoTypes(String levelOneType){
 
         QueryWrapper queryWrapper = new QueryWrapper();

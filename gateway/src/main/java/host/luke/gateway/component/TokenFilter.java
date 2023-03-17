@@ -95,7 +95,7 @@ public class TokenFilter implements GlobalFilter, Ordered {
         System.out.println("service called : "+service);
         /*
             暂时先写的简单一点
-            TODO：完善权限判断 RODBC
+            TODO：完善权限判断 RDBC
          */
         if(true)
             return true;

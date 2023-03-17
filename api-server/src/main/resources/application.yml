@@ -21,6 +21,8 @@ spring:
       maximum-pool-size: 20
       minimum-idle: 1
   data:
+    mongodb:
+      uri: mongodb://admin:samuraichamploo@81.68.212.127:27017/Accounter?authSource=admin&authMechanism=SCRAM-SHA-1
     redis:
       host: 81.68.212.127
       password: beautifulworld
@@ -32,9 +34,24 @@ spring:
           max-idle: 8
           min-idle: 2
           max-wait: 1000
+  rabbitmq:
+    host: 81.68.212.127
+    port: 5672
+    username: guest
+    password: guest
+    virtualHost: /
 
 eureka:
   client:
     service-url:
       defaultZone: http://localhost:8761/eureka
 
+textin:
+  APPID: b494fe57a1b20d4c691ad80556069cfb
+  SECRETCODE: 319b4ed6e88b83bf188d64a9ca130f0e
+
+file:
+  path:
+    win: E:\MyProject\Accounter-file\
+    mac: /Library/MyProjects/Accounter-file/
+    linux: /tmp/file/

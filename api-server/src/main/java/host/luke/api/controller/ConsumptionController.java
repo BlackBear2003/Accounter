@@ -103,6 +103,21 @@ public class ConsumptionController {
 
     }
 
+    @PutMapping("/consumption")
+    @Transactional
+    @IDCheck
+    public ResponseResult updateCons(HttpServletRequest request,@RequestBody Consumption consumption){
+
+        Long userId = Long.valueOf(request.getHeader("userId"));
+
+        if(consumptionService.updateById(consumption)){
+            Map<String,Object> map = new HashMap<>();
+            map.put("consumption",consumption);
+
+            return new ResponseResult(200,"success",map);
+        }
+        return ResponseResult.error();
+    }
 
 
     /**
@@ -391,6 +406,41 @@ public class ConsumptionController {
         return new ResponseResult(200,"success",map);
     }
 
+    @GetMapping("/consumption/range/map")
+    @IDCheck
+    public ResponseResult getConsByRangeParseToMap(HttpServletRequest request, Date start,Date end){
+
+        Long userId = Long.valueOf(request.getHeader("userId"));
+
+        List<Consumption> list = consumptionService.getConsByRange(userId,start,end);
+
+        Date cur = null;
+
+        Map<String,ArrayList> map = new TreeMap<>(Collections.reverseOrder());
+
+        for (Consumption cons:
+                list) {
+            if(Objects.isNull(cur)){
+                cur = cons.getConsumeTime();
+                //start a new day
+                map.put(DateUtil.shortSdf.format(cons.getConsumeTime()),new ArrayList<Consumption>());
+            }
+
+            if(DateUtil.getYearDayIndex(cons.getConsumeTime())==DateUtil.getYearDayIndex(cur)){
+                //is the same day
+                map.get(DateUtil.shortSdf.format(cons.getConsumeTime())).add(cons);
+            }else{
+                //start a new day
+                map.put(DateUtil.shortSdf.format(cons.getConsumeTime()),new ArrayList<Consumption>());
+                cur = cons.getConsumeTime();
+                map.get(DateUtil.shortSdf.format(cons.getConsumeTime())).add(cons);
+
+            }
+        }
+
+
+        return new ResponseResult(200,"success",map);
+    }
 
     @GetMapping("/consumption/last/week")
     @IDCheck

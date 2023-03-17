@@ -49,11 +49,6 @@ spring:
         predicates:
           - Path=/api/**
 
-      - id: TEXTIN-SERVER
-        uri: lb://TEXTIN-SERVER
-        predicates:
-          - Path=/ti/**
-
       - id: FILE-SERVER
         uri: lb://FILE-SERVER
         predicates:
@@ -63,7 +58,12 @@ spring:
         locator:
           enabled: true # 设置为true 请求路径前可以添加微服务名称
           lower-case-service-id: true # 允许为小写
-
+  rabbitmq:
+    host: 81.68.212.127
+    port: 5672
+    username: guest
+    password: guest
+    virtualHost: /
 
 eureka:
   client:

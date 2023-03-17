@@ -81,7 +81,6 @@ public class ConsumptionServiceImpl extends ServiceImpl<ConsumptionMapper, Consu
 
 
 
-
     @Override
     public List getCurYearCons(Long userId, Date date){
 
@@ -114,6 +113,17 @@ public class ConsumptionServiceImpl extends ServiceImpl<ConsumptionMapper, Consu
         wrapper.inSql("consumption_id","select consumption_id from t_user_consumption where user_id = "+userId);
         wrapper.orderByDesc("consume_time");
 
+
+        return consumptionMapper.selectList(wrapper);
+    }
+
+    @Override
+    public List getConsByRange(Long userId, Date start,Date end){
+
+        QueryWrapper wrapper = new QueryWrapper();
+        wrapper.between("consume_time", start,end);
+        wrapper.inSql("consumption_id","select consumption_id from t_user_consumption where user_id = "+userId);
+        wrapper.orderByDesc("consume_time");
 
         return consumptionMapper.selectList(wrapper);
     }

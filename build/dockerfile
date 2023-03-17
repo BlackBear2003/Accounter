@@ -6,7 +6,6 @@ COPY gateway-1.0.jar /gateway.jar
 COPY auth-1.0.jar /auth.jar
 COPY api-server-1.0.jar /api.jar
 COPY file-server-1.0.jar /file.jar
-COPY textin-server-1.0.jar /ti.jar
 
 COPY entrypoint.sh /entrypoint.sh
 
