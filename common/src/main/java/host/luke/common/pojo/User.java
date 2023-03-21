@@ -1,6 +1,5 @@
 package host.luke.common.pojo;
 
-import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -14,4 +13,5 @@ public class User {
     private String username;
     private String password;
     private String mobile;
+    private String nickname;
 }

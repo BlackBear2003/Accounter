@@ -38,7 +38,7 @@ public class LoginController {
     public ResponseResult getSmsCode(String mobile){
         String smsCode = loginService.storeSmsCode(mobile);
         smsCodeSender.send(mobile,smsCode);
-        System.out.println("模拟发送短信到手机号："+mobile+"------验证码为"+smsCode);
+        System.out.println("发送短信到手机号："+mobile+"------验证码为"+smsCode);
         return new ResponseResult<>(200,"success");
     }
 
@@ -78,6 +78,7 @@ public class LoginController {
         map.put("user_id",user.getUserId());
         map.put("username",user.getUsername());
         map.put("mobile",user.getMobile());
+        map.put("nickname",user.getNickname());
         return new ResponseResult<>(200,"success",map);
     }
 

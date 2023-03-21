@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="host.luke.api.dao.MultiLedgerMapper">
+
+    <select id="getMLedgerIdByUserId" parameterType="Long" resultType="Integer">
+        select multi_ledger_id
+        from t_multi_ledger_user where user_id = #{userId};
+    </select>
+
+    <insert id="addLedgerUserBind" >
+        insert into t_multi_ledger_user (user_id,multi_ledger_id)
+        values (#{userId},#{mLedgerId});
+    </insert>
+
+    <delete id="deleteLedgerUserBind" >
+        delete
+        from t_multi_ledger_user
+        where user_id = #{userId} and multi_ledger_id = #{mLedgerId};
+    </delete>
+
+    <select id="getLedgerAllUser" resultType="Long">
+        select user_id
+        from t_multi_ledger_user where multi_ledger_id = #{ledgerId};
+    </select>
+
+    <select id="getBalance" resultType="double">
+        select sum(amount)
+        from t_consumption
+        where consumption_id in
+              (select consumption_id from t_multi_ledger_consumption where multi_ledger_id = #{ledgerId});
+    </select>
+
+    <select id="getLedgerConsList" resultType="Consumption">
+        select *
+        from t_consumption
+        where consumption_id in
+              (select consumption_id from t_multi_ledger_consumption where multi_ledger_id = #{ledgerId})
+        order by consume_time desc;
+    </select>
+
+    <insert id="addMultiCons">
+        insert into t_multi_ledger_consumption (user_id,multi_ledger_id,consumption_id)
+        values (#{userId},#{mLedgerId},#{consId});
+    </insert>
+
+    <delete id="deleteMultiCons">
+        delete
+        from t_multi_ledger_consumption
+        where user_id = #{userId} and multi_ledger_id = #{mLedgerId} and consumption_id = #{consId};
+    </delete>
+
+</mapper>
