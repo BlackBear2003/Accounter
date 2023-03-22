@@ -30,11 +30,11 @@ public class TypeController {
     @GetMapping("/consumption/type")
     @IDCheck
     @ApiLog
-    public ResponseResult getConsByType(HttpServletRequest request, String typeName){
+    public ResponseResult getConsByType(HttpServletRequest request, Integer typeId){
 
         Long userId = Long.valueOf(request.getHeader("userId"));
 
-        List<Consumption> list = typeService.getConsByType(userId,typeName);
+        List<Consumption> list = typeService.getConsByType(userId,typeId);
 
         Map<String,Object> map = new HashMap<>();
         map.put("list",list);
@@ -44,34 +44,14 @@ public class TypeController {
 
     @GetMapping("/type")
     @ApiLog
-    public ResponseResult getLevelOneTypes(){
+    public ResponseResult getTypes(){
 
-        List list = typeService.getLevelOneTypes();
-
-        Map<String,Object> map = new HashMap<>();
-        map.put("list",list);
-
-        return new ResponseResult(200,"success",map);
-    }
-
-    @GetMapping("/type/son")
-    @ApiLog
-    public ResponseResult getLevelTwoTypes(String levelOneType){
-
-        QueryWrapper queryWrapper = new QueryWrapper();
-        queryWrapper.eq("type_name",levelOneType);
-        Type type = typeService.getOne(queryWrapper);
-        System.out.println(type);
-
-        List list = typeService.getSonListByParentId(type.getTypeId());
+        List list = typeService.list();
 
         Map<String,Object> map = new HashMap<>();
         map.put("list",list);
 
         return new ResponseResult(200,"success",map);
     }
-
-
-
 
 }

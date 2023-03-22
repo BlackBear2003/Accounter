@@ -12,8 +12,5 @@ public class Type {
     private Integer typeId;
 
     private String typeName;
-    private Integer level;
-    private Integer parentId;
-
 
 }

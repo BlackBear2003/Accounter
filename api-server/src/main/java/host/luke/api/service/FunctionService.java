@@ -3,6 +3,7 @@ package host.luke.api.service;
 import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONObject;
 import host.luke.common.pojo.Consumption;
+import host.luke.common.utils.TypeUtil;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -53,7 +54,7 @@ public class FunctionService {
     public Consumption commonReceipt(String fileName) throws ParseException {
         String filePath = judgeEnvPath();
         // 商铺小票识别
-        String url = "https://api.textin.com/robot/v1.0/api/receipt";
+        String url = "https://api.textin.com/robot/v1.0/api/bills_crop";
         // 请登录后前往 “工作台-账号设置-开发者信息” 查看 x-ti-app-id
         // 示例代码中 x-ti-app-id 非真实数据
         String appId = APPID;
@@ -109,7 +110,9 @@ public class FunctionService {
 
         Consumption consumption = new Consumption();
 
-        JSONArray list = resJson.getJSONObject("result").getJSONArray("item_list");
+        JSONArray list = resJson.getJSONObject("result").getJSONArray("object_list").getJSONObject(0).getJSONArray("item_list");
+        //取kind 然后使用自写的util来转为id
+        consumption.setTypeId(TypeUtil.getTypeId(resJson.getJSONObject("result").getJSONArray("object_list").getJSONObject(0).getString("kind")));
 
         for(int i=0;i<list.size();i++){
             JSONObject json = list.getJSONObject(i);
@@ -123,11 +126,16 @@ public class FunctionService {
                 consumption.setConsumptionName(json.getString("value"));
             }
             if(json.getString("key").equals("date")){
-                consumption.setConsumeTime(sdf.parse(json.getString("value")));
+                try {
+                    consumption.setConsumeTime(sdf.parse(json.getString("value")));
+                } catch (ParseException e){
+                    e.printStackTrace();
+                }
+            }
+            if(json.getString("key").equals("no")){
+                consumption.setDescription("订单号："+json.getString("value"));
             }
         }
-
-        consumption.setTypeId(9);
         consumption.setCredential(fileName);
 
         return consumption;

@@ -22,66 +22,35 @@ public class TypeServiceImpl extends ServiceImpl<TypeMapper, Type> implements Ty
     ConsumptionMapper consumptionMapper;
 
     @Override
-    @Cacheable(cacheNames = "TypeCache",key = "'type_son_of_'+#parentId")
-    public List<Type> getSonListByParentId(Integer parentId){
+    @Cacheable(cacheNames = "TypeCache")
+    public List<Type> getTypes(Integer parentId){
 
-        QueryWrapper<Type> queryWrapper = new QueryWrapper();
-        queryWrapper.eq("parent_id",parentId);
-        List<Type> list = typeMapper.selectList(queryWrapper);
+        List<Type> list = this.list();
 
         return list;
     }
 
     @Override
-    @Cacheable(cacheNames = "TypeCache",key = "'type_level_one'")
-    public List<Type> getLevelOneTypes(){
-
-        QueryWrapper<Type> queryWrapper = new QueryWrapper();
-        queryWrapper.eq("level",1);
-        List<Type> list = typeMapper.selectList(queryWrapper);
-
-        return list;
+    @Cacheable(cacheNames = "TypeCache")
+    public Integer getTypeIdByName(String typeName){
+        QueryWrapper<Type> wrapper = new QueryWrapper<>();
+        wrapper.eq("type_name",typeName);
+        Integer id = typeMapper.selectOne(wrapper).getTypeId();
+        return id;
     }
 
-
-    public static List<Integer> getSonIdList(List<Type> list){
-        List<Integer> res = new ArrayList<>();
-        for (Type t :
-                list) {
-            res.add(t.getTypeId());
-        }
-        return res;
-    }
 
     @Override
-    public List getConsByType(Long userId, String typeName){
+    public List getConsByType(Long userId, Integer typeId){
 
         //先查出对应名称的Type的Id
-        QueryWrapper queryWrapper = new QueryWrapper();
-        queryWrapper.eq("type_name",typeName);
-        Type type = typeMapper.selectOne(queryWrapper);
-        System.out.println(type);
 
-        //level = 1 , should get all son
-        if(type.getLevel()==1){
-            List<Integer> idList = getSonIdList(this.getSonListByParentId(type.getTypeId()));
+        QueryWrapper wrapper = new QueryWrapper();
+        wrapper.inSql("consumption_id","select consumption_id from t_user_consumption where user_id = "+userId);
+        wrapper.eq("type_id",typeId);
+        wrapper.orderByDesc("consume_time");
+        return consumptionMapper.selectList(wrapper);
 
-            QueryWrapper wrapper = new QueryWrapper();
-            wrapper.inSql("consumption_id","select consumption_id from t_user_consumption where user_id = "+userId);
-            wrapper.in("type_id",idList);
-            wrapper.orderByDesc("consume_time");
-
-            return consumptionMapper.selectList(wrapper);
-        }
-        else if(type.getLevel()==2){
-            QueryWrapper wrapper = new QueryWrapper();
-            wrapper.inSql("consumption_id","select consumption_id from t_user_consumption where user_id = "+userId);
-            wrapper.eq("type_id",type.getTypeId());
-            wrapper.orderByDesc("consume_time");
-
-            return consumptionMapper.selectList(wrapper);
-        }
-        return null;
     }
 
 

@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import host.luke.common.pojo.Consumption;
 import host.luke.common.pojo.MultiLedger;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -12,9 +13,9 @@ public interface MultiLedgerMapper extends BaseMapper<MultiLedger> {
 
     List<Integer> getMLedgerIdByUserId(Long userId);
 
-    int addLedgerUserBind(Long userId,int mLegerId);
+    int addLedgerUserBind(@Param("userId")Long userId,@Param("mLedgerId")int mLedgerId);
 
-    int deleteLedgerUserBind(Long userId,int mLegerId);
+    int deleteLedgerUserBind(@Param("userId")Long userId,@Param("mLedgerId")int mLedgerId);
 
     List<Long> getLedgerAllUser(int ledgerId);
 
@@ -22,8 +23,8 @@ public interface MultiLedgerMapper extends BaseMapper<MultiLedger> {
 
     List<Consumption> getLedgerConsList(int ledgerId);
 
-    int addMultiCons(Long userId,Long consId,int mLedgerId);
+    int addMultiCons(@Param("userId")Long userId,@Param("consId")Long consId,@Param("mLedgerId")int mLedgerId);
 
-    int deleteMultiCons(Long userId,Long consId,int mLedgerId);
+    int deleteMultiCons(@Param("userId")Long userId,@Param("consId")Long consId,@Param("mLedgerId") int mLedgerId);
 
 }

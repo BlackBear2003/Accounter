@@ -7,11 +7,13 @@ import org.springframework.cache.annotation.Cacheable;
 import java.util.List;
 
 public interface TypeService extends IService<Type> {
-    @Cacheable
-    List<Type> getSonListByParentId(Integer parentId);
 
-    @Cacheable(key = "'type_level_one'")
-    List<Type> getLevelOneTypes();
 
-    List getConsByType(Long userId, String typeName);
+    @Cacheable(cacheNames = "TypeCache")
+    List<Type> getTypes(Integer parentId);
+
+    @Cacheable(cacheNames = "TypeCache")
+    Integer getTypeIdByName(String typeName);
+
+    List getConsByType(Long userId, Integer typeId);
 }
