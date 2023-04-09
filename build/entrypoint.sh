@@ -1,5 +1,7 @@
 #!/bin/bash
 
+export  TZ='Asia/Shanghai'
+
 nohup java -jar /eureka.jar > eureka.log &
 nohup java -jar /gateway.jar > gateway.log &
 nohup java -jar /auth.jar > auth.log &

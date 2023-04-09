@@ -39,8 +39,36 @@ public class Base64Util {
                 e.printStackTrace();
             }
         }
+
         return encode;
     }
+
+
+    // 将图片文件转化为字节数组字符串，并对其进行Base64编码处理
+    public static String fileToBase64(InputStream in) {
+
+        byte[] data = null;
+        String encode = null; // 返回Base64编码过的字节数组字符串
+
+        try {
+            // 读取图片字节数组
+            data = new byte[in.available()];
+            in.read(data);
+            encode = Base64.getEncoder().encodeToString(data);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                assert in != null;
+                in.close();
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+        return encode;
+    }
+
 
     /**
      * base64字符串转化成图片

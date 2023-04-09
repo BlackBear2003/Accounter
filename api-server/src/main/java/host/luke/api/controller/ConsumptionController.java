@@ -442,6 +442,34 @@ public class ConsumptionController {
         return new ResponseResult(200,"success",map);
     }
 
+    @GetMapping("/consumption/range/in")
+    @IDCheck
+    public ResponseResult getRangeDayInSum(HttpServletRequest request, Date start,Date end){
+
+        Long userId = Long.valueOf(request.getHeader("userId"));
+
+        Double sum = consumptionMapper.getInEarnedOfDateTime(userId,DateUtil.getDayStartTime(start),DateUtil.getDayEndTime(end));
+
+        Map<String,Object> map = new HashMap<>();
+        map.put("sum",sum);
+
+        return new ResponseResult(200,"success",map);
+    }
+
+    @GetMapping("/consumption/range/out")
+    @IDCheck
+    public ResponseResult getRangeDayOutSum(HttpServletRequest request, Date start,Date end){
+
+        Long userId = Long.valueOf(request.getHeader("userId"));
+
+        Double sum = consumptionMapper.getOutPaidOfDateTime(userId,DateUtil.getDayStartTime(start),DateUtil.getDayEndTime(end));
+
+        Map<String,Object> map = new HashMap<>();
+        map.put("sum",sum);
+
+        return new ResponseResult(200,"success",map);
+    }
+
     @GetMapping("/consumption/last/week")
     @IDCheck
     public ResponseResult getLastWeekCons(HttpServletRequest request,Date date){

@@ -9,6 +9,7 @@ import host.luke.common.utils.ResponseResult;
 import host.luke.common.utils.SnowFlake;
 import jakarta.annotation.Resource;
 import org.apache.commons.lang.RandomStringUtils;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,6 +29,8 @@ public class LoginController {
     UserServiceImpl userService;
     @Resource
     SmsCodeSender smsCodeSender;
+    @Resource
+    RedisTemplate redisTemplate;
 
     @GetMapping("/test1")
     public String test(){
@@ -83,18 +86,32 @@ public class LoginController {
     }
 
     @PostMapping("/register/mobile")
-    public ResponseResult mobileRegister(String mobile,String smsCode){
+    public ResponseResult mobileRegister(String mobile,String smsCode,String password){
+
+        //redisTemplate.opsForValue().set("code-of-"+mobile,smsCode, Duration.ofMinutes(5));
+        String actualCode = null;
+        try {
+            actualCode = ((String) redisTemplate.opsForValue().get("code-of-" + mobile));
+            if(!actualCode.equals(smsCode)){
+                return new ResponseResult(401,"wrong code");
+            }
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+
+        QueryWrapper mobileWrapper = new QueryWrapper();
+        mobileWrapper.eq("mobile",mobile);
+        if(!Objects.isNull(userService.getOne(mobileWrapper))){
+            return new ResponseResult<>(405,"手机号已注册");
+        }
+
         User user = new User();
         user.setMobile(mobile);
         SnowFlake snowFlake = new SnowFlake(0,0);
         user.setUserId(snowFlake.nextId());
-        user.setUsername(mobile+RandomStringUtils.randomAlphanumeric(4));
-        user.setPassword(RandomStringUtils.randomAlphanumeric(8));
-        QueryWrapper mobileWrapper = new QueryWrapper();
-        mobileWrapper.eq("mobile",user.getMobile());
-        if(!Objects.isNull(userService.getOne(mobileWrapper))){
-            return new ResponseResult<>(405,"手机号已注册");
-        }
+        user.setUsername(mobile);
+        user.setPassword(password);
+
         try{
             userService.save(user);
         }catch (org.mybatis.spring.MyBatisSystemException e){

@@ -14,7 +14,6 @@
         <module>common</module>
         <module>gateway</module>
         <module>api-server</module>
-        <module>textin-server</module>
         <module>file-server</module>
     </modules>
 
