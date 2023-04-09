@@ -146,6 +146,25 @@ public class TextInApiController {
         return new ResponseResult(200,"success",res);
     }
 
+    @PostMapping("/shop_receipt")
+    public ResponseResult shopReceipt(String fileName){
+
+        Consumption consumption = null;
+
+        try {
+            consumption = functionService.shopReceipt(fileName);
+        }catch (RuntimeException e){
+            e.printStackTrace();
+            return ResponseResult.error();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        Map res = new HashMap();
+        res.put("consumption",consumption);
+
+        return new ResponseResult(200,"success",res);
+    }
+
 
     @PostMapping("/train_ticket")
     public ResponseResult trainTicket(String fileName){
